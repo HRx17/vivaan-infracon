@@ -50,8 +50,6 @@ export default async function HomePage() {
         <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_30%,rgb(var(--primary)/.08),transparent_45%)]" />
         <Container className="relative grid min-h-[100svh] items-center gap-12 pb-16 pt-28 md:grid-cols-[1.05fr_1fr] md:gap-8 md:pt-24">
           <div className="hero-stagger order-2 md:order-1">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/brand/vivaan-logo.png" alt={settings.brandName} width={669} height={210} className="logo-themed mb-8 h-14 w-auto sm:h-16" style={s(0)} />
             <div className="mb-6 flex items-center gap-4" style={s(0)}>
               <span className="rule-accent" aria-hidden />
               <p className="eyebrow">Founder · {settings.brandName}</p>

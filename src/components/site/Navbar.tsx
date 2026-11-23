@@ -15,10 +15,7 @@ const LINKS = [
 
 export function Navbar({ brand }: { brand: string }) {
   const pathname = usePathname();
-  // pages that open with a full-bleed photograph get a transparent bar until scrolled
-  const overlay = /^\/projects\/[^/]+$/.test(pathname);
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
 
   useEffect(() => setOpen(false), [pathname]);
@@ -26,7 +23,6 @@ export function Navbar({ brand }: { brand: string }) {
     let last = window.scrollY;
     const on = () => {
       const y = window.scrollY;
-      setScrolled(y > 24);
       // hide while scrolling down, reveal as soon as the visitor scrolls up
       if (y > last + 6 && y > 140) setHidden(true);
       else if (y < last - 6 || y < 140) setHidden(false);
@@ -41,7 +37,6 @@ export function Navbar({ brand }: { brand: string }) {
     if (open) window.__lenis?.stop(); else window.__lenis?.start();
   }, [open]);
 
-  const transparent = overlay && !scrolled && !open;
   const isHidden = hidden && !open;
 
   return (
@@ -50,7 +45,7 @@ export function Navbar({ brand }: { brand: string }) {
       onFocusCapture={() => setHidden(false)}
       className={cn(
         "nav-in fixed inset-x-0 top-0 z-50 transition-colors duration-brand ease-brand",
-        transparent ? "bg-transparent text-white" : "border-b border-line bg-bg/90 text-fg backdrop-blur",
+        "nav-glass",
       )}
     >
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:bg-bg focus:px-3 focus:py-2 focus:text-fg">
@@ -59,7 +54,7 @@ export function Navbar({ brand }: { brand: string }) {
       <nav aria-label="Main" className="mx-auto flex h-[72px] max-w-container items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex min-h-tap items-center gap-3" aria-label={`${brand} — home`}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/brand/vivaan-logo.png" alt="" width={669} height={210} className={cn("h-9 w-auto", transparent ? "logo-plate" : "logo-themed")} />
+          <img src="/brand/vivaan-logo.png" alt="" width={669} height={210} className="h-9 w-auto" />
           <span className="sr-only">{brand}</span>
         </Link>
 
@@ -85,7 +80,7 @@ export function Navbar({ brand }: { brand: string }) {
           <ButtonLink
             href="/contact"
             size="sm"
-            className={cn("ml-2", transparent && "!bg-none border-white text-white hover:bg-white hover:text-[#0E1B33]")}
+            className="ml-2"
           >
             Start a conversation
           </ButtonLink>

@@ -176,10 +176,17 @@
   background-size: 200% 100%; animation: shimmer 1.6s ease-in-out infinite; border-radius: var(--radius-sm);
 }
 
-/* The original logo is always shown unaltered; on dark backgrounds it sits on a white plate */
-.logo-plate { background: #fff; padding: 4px 10px; border-radius: 8px; box-sizing: content-box; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .logo-themed { background: #fff; padding: 4px 10px; border-radius: 8px; box-sizing: content-box; } }
-:root[data-theme="dark"] .logo-themed { background: #fff; padding: 4px 10px; border-radius: 8px; box-sizing: content-box; }
+/* Grey frosted-glass header (kept light in both themes so the original logo reads) */
+.nav-glass, :root .nav-glass, :root[data-theme] .nav-glass {
+  --background: 255 255 255; --surface: 243 246 252; --text: 14 27 51; --muted: 94 102 117;
+  --border: 221 223 226; --primary: 30 79 216; --on-primary: 255 255 255; --secondary: 15 42 95;
+  color: rgb(14 27 51);
+  background: linear-gradient(180deg, rgb(222 225 231 / .8), rgb(206 210 218 / .7));
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  backdrop-filter: blur(18px) saturate(160%);
+  border-bottom: 1px solid rgb(255 255 255 / .55);
+  box-shadow: 0 1px 0 rgb(15 23 42 / .06), 0 8px 30px -12px rgb(15 23 42 / .25);
+}
 
 /* Lenis smooth scrolling */
 html.lenis, html.lenis body { height: auto; }
