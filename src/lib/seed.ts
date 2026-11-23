@@ -17,7 +17,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   address: "",
   instagram: "",
   linkedin: "",
-  heroImage: { url: "/projects/sky-revanta/night-elevation.jpg", alt: "Sky Revanta at dusk: lit balconies above two levels of showrooms" },
+  heroImage: { url: "/projects/sky-revanta/aerial-view.jpg", alt: "Aerial view of Sky Revanta on its corner plot" },
   portrait: null,
   stats: [
     { label: "Years building", value: "10+" },

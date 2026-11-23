@@ -20,10 +20,19 @@ export function Navbar({ brand }: { brand: string }) {
   const overlay = pathname === "/" || /^\/projects\/[^/]+$/.test(pathname);
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
 
   useEffect(() => setOpen(false), [pathname]);
   useEffect(() => {
-    const on = () => setScrolled(window.scrollY > 24);
+    let last = window.scrollY;
+    const on = () => {
+      const y = window.scrollY;
+      setScrolled(y > 24);
+      // hide while scrolling down, reveal as soon as the visitor scrolls up
+      if (y > last + 6 && y > 140) setHidden(true);
+      else if (y < last - 6 || y < 140) setHidden(false);
+      last = y;
+    };
     on();
     window.addEventListener("scroll", on, { passive: true });
     return () => window.removeEventListener("scroll", on);
@@ -33,9 +42,12 @@ export function Navbar({ brand }: { brand: string }) {
   }, [open]);
 
   const transparent = overlay && !scrolled && !open;
+  const isHidden = hidden && !open;
 
   return (
     <header
+      style={{ translate: isHidden ? "0 -110%" : "0 0", transition: "translate 500ms cubic-bezier(.16,1,.3,1), background-color 200ms, color 200ms" }}
+      onFocusCapture={() => setHidden(false)}
       className={cn(
         "nav-in fixed inset-x-0 top-0 z-50 transition-colors duration-brand ease-brand",
         transparent ? "bg-transparent text-white" : "border-b border-line bg-bg/90 text-fg backdrop-blur",

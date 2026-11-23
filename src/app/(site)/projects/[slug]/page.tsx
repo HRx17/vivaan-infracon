@@ -11,6 +11,9 @@ import { Parallax } from "@/components/ui/Parallax";
 import { CountUp } from "@/components/ui/CountUp";
 import { GalleryLightbox } from "@/components/site/GalleryLightbox";
 import { ScrollCue } from "@/components/site/ScrollCue";
+import { BuildingTour } from "@/components/site/BuildingTour";
+import { TOURS } from "@/lib/tours";
+import { telLink, whatsappLink } from "@/lib/utils";
 import { Container } from "@/components/ui/Section";
 import { ContactButtons } from "@/components/site/ContactLinks";
 import { IconArrow } from "@/components/site/Icons";
@@ -33,6 +36,7 @@ export default async function ProjectPage({ params }: Props) {
   const [project, settings, all] = await Promise.all([getProjectBySlug(slug), getSettings(), getPublishedProjects()]);
   if (!project) notFound();
 
+  const tour = TOURS[project.slug];
   const others = all.filter((p) => p.id !== project.id);
   const related = [...others.filter((p) => p.status === project.status), ...others.filter((p) => p.status !== project.status)].slice(0, 3);
   const amenitiesSpec = project.specs.find((s) => /^amenities$/i.test(s.label));
@@ -48,32 +52,41 @@ export default async function ProjectPage({ params }: Props) {
 
   return (
     <article>
+      {tour ? (
+        <BuildingTour
+          tour={tour}
+          headingLevel="h1"
+          whatsapp={whatsappLink(settings.whatsapp, `Hello, I'm interested in ${project.title}.`)}
+          phone={settings.phone ? telLink(settings.phone) : null}
+        />
+      ) : (
       <header className="relative flex min-h-[88svh] items-end overflow-hidden bg-secondary text-white">
-        <Parallax className="absolute inset-0">
-          <div className="hero-settle absolute inset-0">
-            <Photo src={project.cover?.url} alt={project.cover?.alt || project.title} fill priority sizes="100vw" />
-          </div>
-        </Parallax>
-        <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-[#0B1222]/90 via-[#0B1222]/35 to-[#0B1222]/30" />
-        <Container className="relative pb-14 pt-32 md:pb-20">
-          <div className="hero-stagger max-w-3xl">
-            <Link href="/projects" className="mb-8 inline-flex min-h-tap items-center gap-2 text-sm text-white/85 transition-colors hover:text-white" style={{ "--i": 0 } as CSSProperties}>
-              <IconArrow className="rotate-180" /> All projects
-            </Link>
-            <div className="mb-5 flex items-center gap-4" style={{ "--i": 1 } as CSSProperties}>
-              <span className="rule-accent" aria-hidden />
-              <p className="text-xs font-semibold uppercase tracking-eyebrow text-white/85">
-                {[STATUS_LABEL[project.status], project.location].filter(Boolean).join(" · ")}
-              </p>
+          <Parallax className="absolute inset-0">
+            <div className="hero-settle absolute inset-0">
+              <Photo src={project.cover?.url} alt={project.cover?.alt || project.title} fill priority sizes="100vw" />
             </div>
-            <h1 className="text-4xl font-extrabold text-white sm:text-6xl md:text-7xl" style={{ "--i": 2 } as CSSProperties}>{project.title}</h1>
-            <p className="mt-5 text-lg text-white/90 md:text-xl" style={{ "--i": 3 } as CSSProperties}>{project.summary}</p>
-          </div>
-        </Container>
-        <ScrollCue />
-      </header>
+          </Parallax>
+          <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-[#0B1222]/90 via-[#0B1222]/35 to-[#0B1222]/30" />
+          <Container className="relative pb-14 pt-32 md:pb-20">
+            <div className="hero-stagger max-w-3xl">
+              <Link href="/projects" className="mb-8 inline-flex min-h-tap items-center gap-2 text-sm text-white/85 transition-colors hover:text-white" style={{ "--i": 0 } as CSSProperties}>
+                <IconArrow className="rotate-180" /> All projects
+              </Link>
+              <div className="mb-5 flex items-center gap-4" style={{ "--i": 1 } as CSSProperties}>
+                <span className="rule-accent" aria-hidden />
+                <p className="text-xs font-semibold uppercase tracking-eyebrow text-white/85">
+                  {[STATUS_LABEL[project.status], project.location].filter(Boolean).join(" · ")}
+                </p>
+              </div>
+              <h1 className="text-4xl font-extrabold text-white sm:text-6xl md:text-7xl" style={{ "--i": 2 } as CSSProperties}>{project.title}</h1>
+              <p className="mt-5 text-lg text-white/90 md:text-xl" style={{ "--i": 3 } as CSSProperties}>{project.summary}</p>
+            </div>
+          </Container>
+          <ScrollCue />
+        </header>
+      )}
 
-      {figures.length > 0 && (
+      {!tour && figures.length > 0 && (
         <div className="border-b border-line">
           <Container>
             <dl className={`grid grid-cols-2 ${({ 3: "md:grid-cols-3", 4: "md:grid-cols-4" } as Record<number, string>)[figures.length] ?? ""}`}>

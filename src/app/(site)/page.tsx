@@ -9,6 +9,9 @@ import { Reveal } from "@/components/ui/Reveal";
 import { Parallax } from "@/components/ui/Parallax";
 import { CountUp } from "@/components/ui/CountUp";
 import { ScrollCue } from "@/components/site/ScrollCue";
+import { BuildingTour } from "@/components/site/BuildingTour";
+import { TOURS } from "@/lib/tours";
+import { telLink, whatsappLink } from "@/lib/utils";
 import { Container, Section } from "@/components/ui/Section";
 import { ContactButtons } from "@/components/site/ContactLinks";
 import { IconArrow } from "@/components/site/Icons";
@@ -32,6 +35,7 @@ export default async function HomePage() {
   const featured = (projects.filter((p) => p.featured).length ? projects.filter((p) => p.featured) : projects).slice(0, 3);
   const counts = (s: ProjectStatus) => projects.filter((p) => p.status === s);
   const [lead, ...rest] = featured;
+  const tourProject = projects.find((p) => TOURS[p.slug]);
 
   return (
     <>
@@ -67,6 +71,16 @@ export default async function HomePage() {
         </Container>
         <ScrollCue />
       </section>
+
+      {/* Immersive building tour */}
+      {tourProject && (
+        <BuildingTour
+          tour={TOURS[tourProject.slug]}
+          whatsapp={whatsappLink(settings.whatsapp, `Hello, I'm interested in ${tourProject.title}.`)}
+          phone={settings.phone ? telLink(settings.phone) : null}
+          detailsHref={`/projects/${tourProject.slug}`}
+        />
+      )}
 
       {/* Intro + stats */}
       <Section id="about">
