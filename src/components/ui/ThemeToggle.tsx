@@ -44,4 +44,4 @@ export function ThemeToggle() {
 }
 
 /** Inline script: apply a stored theme choice before first paint. */
-export const themeScript = `document.documentElement.classList.add('js');try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}`;
+export const themeScript = `(function(){var d=document.documentElement,t0=Date.now(),done=function(){if(d.classList.contains('splash-done'))return;var w=Math.max(0,700-(Date.now()-t0));setTimeout(function(){d.classList.add('splash-done')},w)};d.classList.add('js');if(document.readyState==='complete')done();else window.addEventListener('load',done);setTimeout(function(){d.classList.add('splash-done')},4500)})();try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}`;

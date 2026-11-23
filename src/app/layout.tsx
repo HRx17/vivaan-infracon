@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Manrope } from "next/font/google";
+import { Suspense } from "react";
 import { themeScript } from "@/components/ui/ThemeToggle";
+import { Splash } from "@/components/ui/Splash";
+import { NavigationProgress } from "@/components/ui/NavigationProgress";
 import "./globals.css";
 
 const heading = Manrope({ subsets: ["latin"], weight: ["600", "800"], variable: "--font-heading", display: "swap" });
@@ -27,7 +30,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body>{children}</body>
+      <body>
+        <Splash />
+        <Suspense fallback={null}><NavigationProgress /></Suspense>
+        {children}
+      </body>
     </html>
   );
 }

@@ -139,6 +139,33 @@
 }
 .btn-sweep:hover { background-size: 100% 100%; color: rgb(var(--on-primary)); }
 
+/* ───────────── Loading states ───────────── */
+/* Splash: only with JS, until the page (fonts + hero photo) has loaded */
+#splash { display: none; }
+.js #splash {
+  display: flex; position: fixed; inset: 0; z-index: 90; align-items: center; justify-content: center;
+  background: rgb(var(--background)); transition: opacity 700ms var(--ease-out), visibility 0s linear 700ms;
+}
+.splash-done #splash { opacity: 0; visibility: hidden; pointer-events: none; }
+/* hold the hero entrance until the splash lifts */
+.js:not(.splash-done) .hero-stagger > *, .js:not(.splash-done) .hero-settle,
+.js:not(.splash-done) .nav-in, .js:not(.splash-done) .hero-stagger .rule-accent { animation-play-state: paused; }
+@keyframes splash-mark { from { stroke-dashoffset: 240; } to { stroke-dashoffset: 0; } }
+@keyframes splash-bar { 0% { transform: translateX(-100%); } 100% { transform: translateX(250%); } }
+.splash-mark { stroke-dasharray: 240; animation: splash-mark 1400ms var(--ease-out) both; }
+.splash-bar { animation: splash-bar 1300ms cubic-bezier(.6, 0, .4, 1) infinite; }
+
+/* Skeletons shown while the next page is loading */
+@keyframes shimmer { from { background-position: 150% 0; } to { background-position: -50% 0; } }
+.skeleton {
+  background: linear-gradient(90deg, rgb(var(--surface)) 0%, rgb(var(--border) / .7) 50%, rgb(var(--surface)) 100%);
+  background-size: 200% 100%; animation: shimmer 1.6s ease-in-out infinite; border-radius: var(--radius-sm);
+}
+.skeleton-dark {
+  background: linear-gradient(90deg, rgb(255 255 255 / .06) 0%, rgb(255 255 255 / .14) 50%, rgb(255 255 255 / .06) 100%);
+  background-size: 200% 100%; animation: shimmer 1.6s ease-in-out infinite; border-radius: var(--radius-sm);
+}
+
 /* Lightbox */
 @keyframes lb-in { from { opacity: 0; transform: scale(.97); } to { opacity: 1; transform: none; } }
 .lb-in { animation: lb-in 450ms var(--ease-out) both; }
@@ -150,5 +177,6 @@
   .js [data-reveal] > .reveal-zoom { transform: none; clip-path: none; }
   .js [data-reveal] .rule-accent { width: 3rem; }
   .scroll-dot { animation: none; }
+  .skeleton, .skeleton-dark { animation: none; }
   .lift:hover { transform: none; }
 }
