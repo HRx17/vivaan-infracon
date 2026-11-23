@@ -37,7 +37,7 @@ export function Navbar({ brand }: { brand: string }) {
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-colors duration-brand ease-brand",
+        "nav-in fixed inset-x-0 top-0 z-50 transition-colors duration-brand ease-brand",
         transparent ? "bg-transparent text-white" : "border-b border-line bg-bg/90 text-fg backdrop-blur",
       )}
     >
@@ -74,7 +74,7 @@ export function Navbar({ brand }: { brand: string }) {
           <ButtonLink
             href="/contact"
             size="sm"
-            className={cn("ml-2", transparent && "border-white text-white hover:bg-white hover:text-[#0E1B33]")}
+            className={cn("ml-2", transparent && "!bg-none border-white text-white hover:bg-white hover:text-[#0E1B33]")}
           >
             Start a conversation
           </ButtonLink>

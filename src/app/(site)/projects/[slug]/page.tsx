@@ -1,11 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { notFound } from "next/navigation";
 import { getProjectBySlug, getPublishedProjects, getSettings } from "@/lib/data";
 import { STATUS_LABEL } from "@/lib/types";
 import { ButtonLink } from "@/components/ui/Button";
 import { Photo } from "@/components/ui/Photo";
 import { Reveal } from "@/components/ui/Reveal";
+import { Parallax } from "@/components/ui/Parallax";
+import { CountUp } from "@/components/ui/CountUp";
+import { GalleryLightbox } from "@/components/site/GalleryLightbox";
+import { ScrollCue } from "@/components/site/ScrollCue";
 import { Container } from "@/components/ui/Section";
 import { ContactButtons } from "@/components/site/ContactLinks";
 import { IconArrow } from "@/components/site/Icons";
@@ -30,52 +35,80 @@ export default async function ProjectPage({ params }: Props) {
 
   const others = all.filter((p) => p.id !== project.id);
   const related = [...others.filter((p) => p.status === project.status), ...others.filter((p) => p.status !== project.status)].slice(0, 3);
+  const amenitiesSpec = project.specs.find((s) => /^amenities$/i.test(s.label));
+  const amenities = amenitiesSpec ? amenitiesSpec.value.split(/\s*[,;·]\s*/).filter(Boolean).map((a) => a[0].toUpperCase() + a.slice(1)) : [];
+  const figures = project.specs.slice(0, 8).filter((s) => /^\d[\d,]*(?:\.\d+)?(?=[\s,]|$)/.test(s.value)).slice(0, 4);
   const facts = [
     { label: "Status", value: STATUS_LABEL[project.status] },
     project.category && { label: "Type", value: project.category },
     project.location && { label: "Location", value: project.location },
     project.year && { label: project.status === "upcoming" ? "Timeline" : "Year", value: project.year },
-    ...project.specs,
+    ...project.specs.filter((s) => s !== amenitiesSpec),
   ].filter(Boolean) as { label: string; value: string }[];
 
   return (
     <article>
-      <header className="relative flex min-h-[78svh] items-end overflow-hidden bg-secondary text-white">
-        <Photo src={project.cover?.url} alt={project.cover?.alt || project.title} fill priority sizes="100vw" />
+      <header className="relative flex min-h-[88svh] items-end overflow-hidden bg-secondary text-white">
+        <Parallax className="absolute inset-0">
+          <div className="hero-settle absolute inset-0">
+            <Photo src={project.cover?.url} alt={project.cover?.alt || project.title} fill priority sizes="100vw" />
+          </div>
+        </Parallax>
         <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-[#0B1222]/90 via-[#0B1222]/35 to-[#0B1222]/30" />
         <Container className="relative pb-14 pt-32 md:pb-20">
-          <Link href="/projects" className="mb-8 inline-flex min-h-tap items-center gap-2 text-sm text-white/85 hover:text-white">
-            <IconArrow className="rotate-180" /> All projects
-          </Link>
-          <Reveal className="max-w-3xl">
-            <div className="mb-5 flex items-center gap-4">
+          <div className="hero-stagger max-w-3xl">
+            <Link href="/projects" className="mb-8 inline-flex min-h-tap items-center gap-2 text-sm text-white/85 transition-colors hover:text-white" style={{ "--i": 0 } as CSSProperties}>
+              <IconArrow className="rotate-180" /> All projects
+            </Link>
+            <div className="mb-5 flex items-center gap-4" style={{ "--i": 1 } as CSSProperties}>
               <span className="rule-accent" aria-hidden />
-              <p className="text-xs font-semibold uppercase tracking-eyebrow text-white/85">{STATUS_LABEL[project.status]}</p>
+              <p className="text-xs font-semibold uppercase tracking-eyebrow text-white/85">
+                {[STATUS_LABEL[project.status], project.location].filter(Boolean).join(" · ")}
+              </p>
             </div>
-            <h1 className="text-4xl font-extrabold text-white sm:text-6xl">{project.title}</h1>
-            <p className="mt-5 text-lg text-white/90 md:text-xl">{project.summary}</p>
-          </Reveal>
+            <h1 className="text-4xl font-extrabold text-white sm:text-6xl md:text-7xl" style={{ "--i": 2 } as CSSProperties}>{project.title}</h1>
+            <p className="mt-5 text-lg text-white/90 md:text-xl" style={{ "--i": 3 } as CSSProperties}>{project.summary}</p>
+          </div>
         </Container>
+        <ScrollCue />
       </header>
 
+      {figures.length > 0 && (
+        <div className="border-b border-line">
+          <Container>
+            <dl className={`grid grid-cols-2 ${({ 3: "md:grid-cols-3", 4: "md:grid-cols-4" } as Record<number, string>)[figures.length] ?? ""}`}>
+              {figures.map((f, i) => {
+                const [, num, rest] = f.value.match(/^([\d,.]+)[\s,]*(.*)$/) ?? [, f.value, ""];
+                return (
+                  <Reveal key={f.label} delay={i * 100} className="flex flex-col-reverse gap-1 border-line py-8 pr-4 odd:border-r md:border-r md:last:border-r-0 md:pl-6 md:first:pl-0">
+                    <dt className="text-sm text-muted">{f.label}{rest && <span className="block text-xs text-muted/80">{rest}</span>}</dt>
+                    <dd className="font-heading text-4xl font-extrabold tabular-nums text-fg md:text-5xl"><CountUp value={num as string} /></dd>
+                  </Reveal>
+                );
+              })}
+            </dl>
+          </Container>
+        </div>
+      )}
+
       <Container className="grid gap-14 py-section lg:grid-cols-[1fr_360px] lg:gap-20">
-        <Reveal>
-          <div className="max-w-2xl space-y-5 text-lg leading-relaxed">
-            {project.description.split(/\n{2,}/).map((para, i) => (
-              <p key={i} className={i === 0 ? "text-fg" : "text-muted"}>{para}</p>
-            ))}
-          </div>
-        </Reveal>
+        <div className="max-w-2xl space-y-5 text-lg leading-relaxed">
+          {project.description.split(/\n{2,}/).map((para, i) => (
+            <Reveal key={i} delay={Math.min(i, 3) * 80}>
+              <p className={i === 0 ? "text-fg" : "text-muted"}>{para}</p>
+            </Reveal>
+          ))}
+        </div>
         <aside className="lg:sticky lg:top-28 lg:self-start">
           <dl>
-            {facts.map((f) => (
-              <div key={f.label + f.value} className="flex justify-between gap-6 border-t border-line py-4">
-                <dt className="text-sm text-muted">{f.label}</dt>
+            {facts.map((f, i) => (
+              <Reveal key={f.label + f.value} variant="fade" delay={Math.min(i, 10) * 45} className="flex justify-between gap-6 border-t border-line py-4">
+                <dt className="shrink-0 text-sm text-muted">{f.label}</dt>
                 <dd className="text-right font-medium">{f.value}</dd>
-              </div>
+              </Reveal>
             ))}
           </dl>
-          <div className="border-t border-line pt-6">
+          <Reveal className="border-t border-line pt-6">
             <p className="mb-4 font-heading text-lg font-extrabold">
               {project.status === "completed" ? "Want something like this?" : "Interested in this project?"}
             </p>
@@ -86,37 +119,47 @@ export default async function ProjectPage({ params }: Props) {
             >
               Send an enquiry <IconArrow />
             </Link>
-          </div>
+          </Reveal>
         </aside>
       </Container>
 
-      {project.gallery.length > 0 && (
-        <Container className="pb-section">
-          <ul className="grid items-start gap-gap sm:grid-cols-2">
-            {project.gallery.map((img, i) => {
-              const wide = img.wide ?? (i === 0 || project.gallery.length === 2);
-              return (
-                <li key={img.url + i} className={wide ? "sm:col-span-2" : undefined}>
-                  <Reveal>
-                    <figure>
-                      <div className="overflow-hidden rounded-md bg-surface">
-                        {/* natural aspect ratio — floor plans and elevations are never cropped */}
-                        <Photo
-                          src={img.url}
-                          alt={img.alt || `${project.title} — image ${i + 1}`}
-                          width={0}
-                          height={0}
-                          sizes={wide ? "(min-width: 1200px) 1200px, 100vw" : "(min-width: 640px) 50vw, 100vw"}
-                          style={{ width: "100%", height: "auto" }}
-                        />
-                      </div>
-                      {img.alt && <figcaption className="mt-3 text-sm text-muted">{img.alt}</figcaption>}
-                    </figure>
+      {amenities.length > 0 && (
+        <section className="bg-surface py-section">
+          <Container>
+            <Reveal className="mb-10 max-w-2xl">
+              <div className="mb-5 flex items-center gap-4">
+                <span className="rule-accent" aria-hidden />
+                <p className="eyebrow">Lifestyle</p>
+              </div>
+              <h2 className="text-3xl font-extrabold sm:text-4xl">Amenities</h2>
+            </Reveal>
+            <ul className="grid grid-cols-2 gap-x-gap sm:grid-cols-3 lg:grid-cols-4">
+              {amenities.map((a, i) => (
+                <li key={a}>
+                  <Reveal delay={(i % 4) * 70} className="group flex min-h-[64px] items-center gap-3 border-t border-line py-4">
+                    <span aria-hidden className="h-px w-4 bg-accent transition-all duration-500 ease-brand group-hover:w-8" />
+                    <span className="font-medium">{a}</span>
                   </Reveal>
                 </li>
-              );
-            })}
-          </ul>
+              ))}
+            </ul>
+          </Container>
+        </section>
+      )}
+
+      {project.gallery.length > 0 && (
+        <Container className="py-section">
+          <Reveal className="mb-10 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <div className="mb-5 flex items-center gap-4">
+                <span className="rule-accent" aria-hidden />
+                <p className="eyebrow">Gallery</p>
+              </div>
+              <h2 className="text-3xl font-extrabold sm:text-4xl">Inside {project.title}</h2>
+            </div>
+            <p className="text-sm text-muted">{project.gallery.length} images · tap any to enlarge</p>
+          </Reveal>
+          <GalleryLightbox images={project.gallery} title={project.title} />
         </Container>
       )}
 
@@ -128,7 +171,7 @@ export default async function ProjectPage({ params }: Props) {
               <ButtonLink href="/projects">View all <IconArrow /></ButtonLink>
             </div>
             <div className="grid gap-x-gap gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
-              {related.map((p) => <ProjectCard key={p.id} project={p} />)}
+              {related.map((p, i) => <Reveal key={p.id} delay={i * 90}><ProjectCard project={p} /></Reveal>)}
             </div>
           </Container>
         </section>

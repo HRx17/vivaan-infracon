@@ -71,11 +71,11 @@ export const SAMPLE_PROJECTS: Project[] = [
     specs: [
       { label: "Residences", value: "48 × 4 BHK, four per floor" },
       { label: "Home size", value: "4,032 sq. ft." },
-      { label: "Building", value: "Ground + 13 floors; homes on 2nd–13th" },
+      { label: "Building", value: "14 storeys, ground + 13; homes on 2nd–13th" },
       { label: "Showrooms", value: "22, on ground and first floor" },
       { label: "Road frontage", value: "Corner plot on 30 m & 18 m roads" },
       { label: "Parking", value: "Basement and surface parking" },
-      { label: "Amenities", value: "Gym, indoor games, library, amphitheatre, landscaped garden, gazebo, children's & toddler play areas" },
+      { label: "Amenities", value: "Gymnasium, Indoor games, Library, Amphitheatre, Landscaped garden, Gazebo seating, Water feature, Open terrace garden, Children's play area, Toddler play area, Senior citizen seating, School pick-up stand, Attractive foyer, Grand entrance gate, Basement parking, 24×7 security, CCTV, Intercom" },
       { label: "Safety", value: "24×7 security, CCTV, intercom" },
       { label: "Flooring", value: "800×800 vitrified tiles; wooden floor in master bedroom" },
       { label: "Kitchen", value: "Polished granite platform, stainless-steel sink" },

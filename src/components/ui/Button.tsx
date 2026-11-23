@@ -9,7 +9,7 @@ const base =
   "lift inline-flex items-center justify-center gap-2 rounded-btn font-medium whitespace-nowrap select-none " +
   "disabled:opacity-50 disabled:pointer-events-none min-h-tap";
 const variants: Record<Variant, string> = {
-  outline: "border border-primary text-primary hover:bg-primary hover:text-primary-fg",
+  outline: "btn-sweep border border-primary text-primary",
   solid: "border border-primary bg-primary text-primary-fg hover:bg-secondary hover:border-secondary hover:text-white",
   ghost: "border border-transparent text-fg hover:border-line",
   danger: "border border-danger/60 text-danger hover:bg-danger hover:text-bg",

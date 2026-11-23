@@ -1,10 +1,14 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { getPublishedProjects, getSettings } from "@/lib/data";
 import { STATUS_LABEL, STATUS_TENSE, type ProjectStatus } from "@/lib/types";
 import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Photo } from "@/components/ui/Photo";
 import { Reveal } from "@/components/ui/Reveal";
+import { Parallax } from "@/components/ui/Parallax";
+import { CountUp } from "@/components/ui/CountUp";
+import { ScrollCue } from "@/components/site/ScrollCue";
 import { Container, Section } from "@/components/ui/Section";
 import { ContactButtons } from "@/components/site/ContactLinks";
 import { IconArrow } from "@/components/site/Icons";
@@ -33,30 +37,35 @@ export default async function HomePage() {
     <>
       {/* Hero */}
       <section className="relative flex min-h-[100svh] items-end overflow-hidden bg-secondary text-white">
-        <Photo src={settings.heroImage?.url} alt={settings.heroImage?.alt || ""} fill priority sizes="100vw" />
+        <Parallax className="absolute inset-0">
+          <div className="hero-settle absolute inset-0">
+            <Photo src={settings.heroImage?.url} alt={settings.heroImage?.alt || ""} fill priority sizes="100vw" />
+          </div>
+        </Parallax>
         <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-[#0B1222]/90 via-[#0B1222]/45 to-[#0B1222]/25" />
         <Container className="relative pb-16 pt-32 md:pb-24">
-          <Reveal className="max-w-3xl">
-            <div className="mb-6 flex items-center gap-4">
+          <div className="hero-stagger max-w-3xl">
+            <div className="mb-6 flex items-center gap-4" style={{ "--i": 0 } as CSSProperties}>
               <span className="rule-accent" aria-hidden />
               <p className="text-xs font-semibold uppercase tracking-eyebrow text-white/85">
                 {settings.ownerName} · Builder &amp; Founder
               </p>
             </div>
-            <h1 className="text-[2.6rem] font-extrabold leading-[1.05] text-white sm:text-6xl md:text-7xl">
+            <h1 className="text-[2.6rem] font-extrabold leading-[1.05] text-white sm:text-6xl md:text-7xl" style={{ "--i": 1 } as CSSProperties}>
               {settings.brandName}
             </h1>
-            <p className="mt-6 max-w-xl text-lg text-white/90 md:text-xl">{settings.tagline}</p>
-            <div className="mt-10 flex flex-wrap gap-3">
+            <p className="mt-6 max-w-xl text-lg text-white/90 md:text-xl" style={{ "--i": 2 } as CSSProperties}>{settings.tagline}</p>
+            <div className="mt-10 flex flex-wrap gap-3" style={{ "--i": 3 } as CSSProperties}>
               <ButtonLink href="/projects" size="lg" className="border-white bg-white !text-[#0E1B33] hover:bg-transparent hover:!text-white">
                 View the work <IconArrow />
               </ButtonLink>
-              <ButtonLink href="/contact" size="lg" className="border-white/80 text-white hover:bg-white hover:text-[#0E1B33]">
+              <ButtonLink href="/contact" size="lg" className="border-white/80 !bg-none text-white hover:bg-white hover:!text-[#0E1B33]">
                 Collaborate
               </ButtonLink>
             </div>
-          </Reveal>
+          </div>
         </Container>
+        <ScrollCue />
       </section>
 
       {/* Intro + stats */}
@@ -75,8 +84,10 @@ export default async function HomePage() {
           </Reveal>
           <div className="flex flex-col gap-8">
             {settings.portrait?.url && (
-              <Reveal className="relative aspect-[4/5] overflow-hidden rounded-md">
-                <Photo src={settings.portrait.url} alt={settings.portrait.alt || settings.ownerName} fill sizes="(min-width: 768px) 40vw, 100vw" />
+              <Reveal variant="image" className="relative aspect-[4/5] overflow-hidden rounded-md">
+                <div className="reveal-zoom absolute inset-0">
+                  <Photo src={settings.portrait.url} alt={settings.portrait.alt || settings.ownerName} fill sizes="(min-width: 768px) 40vw, 100vw" />
+                </div>
               </Reveal>
             )}
             {settings.stats.length > 0 && (
@@ -84,7 +95,7 @@ export default async function HomePage() {
                 {settings.stats.map((s, i) => (
                   <Reveal key={s.label} delay={i * 80} className="flex flex-col-reverse md:border-t md:border-line md:py-6">
                     <dt className="text-sm text-muted">{s.label}</dt>
-                    <dd className="font-heading text-3xl font-extrabold text-fg md:text-5xl">{s.value}</dd>
+                    <dd className="font-heading text-3xl font-extrabold tabular-nums text-fg md:text-5xl"><CountUp value={s.value} /></dd>
                   </Reveal>
                 ))}
               </dl>
