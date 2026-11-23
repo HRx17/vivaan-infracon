@@ -41,7 +41,7 @@ const VIS: Visibility[] = ["published", "draft", "archived"];
 const str = (v: unknown, n = 300) => (typeof v === "string" ? v.trim().slice(0, n) : "");
 const img = (v: unknown): ProjectImage | null => {
   const o = v as ProjectImage | null;
-  return o && typeof o.url === "string" && o.url ? { url: o.url.slice(0, 1000), alt: str(o.alt, 200) } : null;
+  return o && typeof o.url === "string" && o.url ? { url: o.url.slice(0, 1000), alt: str(o.alt, 200), ...(o.wide ? { wide: true } : {}) } : null;
 };
 
 export type SaveResult = { ok: boolean; error?: string; id?: string };
@@ -76,7 +76,7 @@ export async function saveProject(payload: string): Promise<SaveResult> {
     specs: (Array.isArray(raw.specs) ? raw.specs : [])
       .map((s: ProjectSpec) => ({ label: str(s?.label, 60), value: str(s?.value, 120) }))
       .filter((s) => s.label && s.value)
-      .slice(0, 20),
+      .slice(0, 24),
     featured: !!raw.featured,
     visibility: VIS.includes(raw.visibility as Visibility) ? (raw.visibility as Visibility) : "draft",
     order: existing?.order ?? Math.min(0, ...all.map((p) => p.order)) - 1,

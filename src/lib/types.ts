@@ -4,6 +4,8 @@ export type Visibility = "published" | "draft" | "archived";
 export interface ProjectImage {
   url: string;
   alt: string;
+  /** Show full-width in the project gallery */
+  wide?: boolean;
 }
 
 export interface ProjectSpec {

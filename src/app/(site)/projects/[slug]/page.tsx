@@ -94,7 +94,7 @@ export default async function ProjectPage({ params }: Props) {
         <Container className="pb-section">
           <ul className="grid items-start gap-gap sm:grid-cols-2">
             {project.gallery.map((img, i) => {
-              const wide = i === 0 || project.gallery.length === 2;
+              const wide = img.wide ?? (i === 0 || project.gallery.length === 2);
               return (
                 <li key={img.url + i} className={wide ? "sm:col-span-2" : undefined}>
                   <Reveal>

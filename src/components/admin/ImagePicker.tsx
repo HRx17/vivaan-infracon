@@ -100,6 +100,10 @@ export function Gallery({ value, onChange, onMakeCover }: {
               <div className="flex flex-wrap gap-1">
                 <button type="button" className={btn} aria-label="Move earlier" onClick={() => move(i, -1)} disabled={i === 0}>←</button>
                 <button type="button" className={btn} aria-label="Move later" onClick={() => move(i, 1)} disabled={i === value.length - 1}>→</button>
+                <button type="button" className={btn} aria-pressed={!!g.wide}
+                  onClick={() => onChange(value.map((x, k) => (k === i ? { ...x, wide: !x.wide } : x)))}>
+                  {g.wide ? "✓ Full width" : "Full width"}
+                </button>
                 {onMakeCover && <button type="button" className={btn} onClick={() => onMakeCover(g)}>Set as cover</button>}
                 <button type="button" className={cn(btn, "hover:border-danger hover:text-danger")} onClick={() => onChange(value.filter((_, k) => k !== i))}>Remove</button>
               </div>
