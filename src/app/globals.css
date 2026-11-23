@@ -176,9 +176,10 @@
   background-size: 200% 100%; animation: shimmer 1.6s ease-in-out infinite; border-radius: var(--radius-sm);
 }
 
-/* Coloured logo on light backgrounds; switch to the white version in dark mode */
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .logo-themed { content: url("/brand/vivaan-logo-white.png"); } }
-:root[data-theme="dark"] .logo-themed { content: url("/brand/vivaan-logo-white.png"); }
+/* The original logo is always shown unaltered; on dark backgrounds it sits on a white plate */
+.logo-plate { background: #fff; padding: 4px 10px; border-radius: 8px; box-sizing: content-box; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .logo-themed { background: #fff; padding: 4px 10px; border-radius: 8px; box-sizing: content-box; } }
+:root[data-theme="dark"] .logo-themed { background: #fff; padding: 4px 10px; border-radius: 8px; box-sizing: content-box; }
 
 /* Lenis smooth scrolling */
 html.lenis, html.lenis body { height: auto; }

@@ -59,7 +59,7 @@ export function Navbar({ brand }: { brand: string }) {
       <nav aria-label="Main" className="mx-auto flex h-[72px] max-w-container items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex min-h-tap items-center gap-3" aria-label={`${brand} — home`}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={transparent ? "/brand/vivaan-logo-white.png" : "/brand/vivaan-logo.png"} alt="" width={430} height={136} className={cn("h-9 w-auto", !transparent && "logo-themed")} />
+          <img src="/brand/vivaan-logo.png" alt="" width={669} height={210} className={cn("h-9 w-auto", transparent ? "logo-plate" : "logo-themed")} />
           <span className="sr-only">{brand}</span>
         </Link>
 
