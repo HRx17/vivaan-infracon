@@ -1,0 +1,11 @@
+node_modules
+.next
+out
+.env*.local
+.env
+# local storage driver (projects, enquiries, uploaded photos)
+data/*
+!data/.gitkeep
+.vercel
+*.tsbuildinfo
+next-env.d.ts
