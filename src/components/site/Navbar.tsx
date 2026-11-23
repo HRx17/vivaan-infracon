@@ -16,7 +16,7 @@ const LINKS = [
 export function Navbar({ brand }: { brand: string }) {
   const pathname = usePathname();
   // pages that open with a full-bleed photograph get a transparent bar until scrolled
-  const overlay = pathname === "/" || /^\/projects\/[^/]+$/.test(pathname);
+  const overlay = /^\/projects\/[^/]+$/.test(pathname);
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);

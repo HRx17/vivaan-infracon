@@ -131,6 +131,15 @@
 .fade-in-late { animation: fade-in 1200ms ease both; animation-delay: 1400ms; }
 .scroll-dot { animation: scroll-dot 2200ms cubic-bezier(.6, 0, .4, 1) infinite; }
 
+/* Hero collage: cards fly in, settle at their tilt, then float */
+@keyframes collage-in {
+  from { opacity: 0; transform: translate(var(--from, 0, 40px)) rotate(calc(var(--rot, 0deg) * 3)) scale(.6); }
+  to { opacity: 1; transform: translate(0, 0) rotate(var(--rot, 0deg)) scale(1); }
+}
+@keyframes collage-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+.collage-in { animation: collage-in 1500ms var(--ease-out) both; animation-delay: var(--d, 0ms); }
+.collage-float { animation: collage-float 7s ease-in-out infinite; animation-delay: var(--fd, 0s); }
+
 /* Outlined buttons: fill sweeps in from the left */
 .btn-sweep {
   background-image: linear-gradient(rgb(var(--primary)), rgb(var(--primary)));
@@ -149,7 +158,8 @@
 .splash-done #splash { opacity: 0; visibility: hidden; pointer-events: none; }
 /* hold the hero entrance until the splash lifts */
 .js:not(.splash-done) .hero-stagger > *, .js:not(.splash-done) .hero-settle,
-.js:not(.splash-done) .nav-in, .js:not(.splash-done) .hero-stagger .rule-accent { animation-play-state: paused; }
+.js:not(.splash-done) .nav-in, .js:not(.splash-done) .hero-stagger .rule-accent,
+.js:not(.splash-done) .collage-in { animation-play-state: paused; }
 @keyframes splash-mark { from { stroke-dashoffset: 240; } to { stroke-dashoffset: 0; } }
 @keyframes splash-bar { 0% { transform: translateX(-100%); } 100% { transform: translateX(250%); } }
 .splash-mark { stroke-dasharray: 240; animation: splash-mark 1400ms var(--ease-out) both; }

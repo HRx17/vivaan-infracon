@@ -93,3 +93,27 @@ export function AdminSkeleton() {
     </div>
   );
 }
+
+/** Home: light two-column hero (text + photo collage). */
+export function HomeSkeleton() {
+  return (
+    <div aria-busy="true" className="bg-surface">
+      <Status />
+      <Container className="grid min-h-[100svh] items-center gap-12 pb-16 pt-28 md:grid-cols-[1.05fr_1fr]">
+        <div className="order-2 space-y-4 md:order-1">
+          <Bar className="h-3 w-48" />
+          <Bar className="h-16 w-3/4 md:h-24" />
+          <Bar className="h-16 w-2/3 md:h-24" />
+          <Bar className="mt-4 h-5 w-full max-w-md" />
+          <div className="flex gap-3 pt-6"><Bar className="h-12 w-40 rounded-btn" /><Bar className="h-12 w-36 rounded-btn" /></div>
+        </div>
+        <div className="relative order-1 mx-auto aspect-[1/1.05] w-full max-w-[560px] md:order-2">
+          <Bar className="absolute left-0 top-[4%] aspect-[4/5] w-[44%] -rotate-6 rounded-2xl" />
+          <Bar className="absolute right-0 top-0 aspect-[4/5] w-[38%] rotate-6 rounded-2xl" />
+          <Bar className="absolute left-1/2 top-1/2 aspect-[4/5] w-[54%] -translate-x-1/2 -translate-y-[46%] rounded-[28px]" />
+          <Bar className="absolute -bottom-[2%] -right-[3%] aspect-[4/3] w-[40%] -rotate-3 rounded-2xl" />
+        </div>
+      </Container>
+    </div>
+  );
+}

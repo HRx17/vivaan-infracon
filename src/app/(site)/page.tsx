@@ -9,7 +9,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { Parallax } from "@/components/ui/Parallax";
 import { CountUp } from "@/components/ui/CountUp";
 import { Container, Section } from "@/components/ui/Section";
-import { ScrollCue } from "@/components/site/ScrollCue";
+import { HeroCollage, type CollageItem } from "@/components/site/HeroCollage";
 import { ProjectCard } from "@/components/site/ProjectCard";
 import { TestimonialMarquee } from "@/components/site/TestimonialMarquee";
 import { Stars } from "@/components/site/Stars";
@@ -38,49 +38,45 @@ export default async function HomePage() {
   const [lead, ...rest] = featured;
   const wa = whatsappLink(settings.whatsapp, `Hello ${settings.ownerName.split(" ")[0]}, I'd like to talk about a project with ${settings.brandName}.`);
   const s = (i: number) => ({ "--i": i }) as CSSProperties;
+  // up to three project photos for the hero collage: covers first, then gallery shots
+  const collage: CollageItem[] = [];
+  for (const p of projects) if (p.cover?.url) collage.push({ src: p.cover.url, alt: p.cover.alt || p.title, title: p.title, href: `/projects/${p.slug}` });
+  for (const p of projects) for (const g of p.gallery) if (collage.length < 3 && !g.url.includes("plan")) collage.push({ src: g.url, alt: g.alt || p.title, title: p.title, href: `/projects/${p.slug}` });
 
   return (
     <>
-      {/* Hero: the founder */}
-      <section className="relative flex min-h-[100svh] items-end overflow-hidden bg-secondary text-white">
-        <Parallax className="absolute inset-0">
-          <div className="hero-settle absolute inset-0">
-            <Photo src={settings.heroImage?.url} alt={settings.heroImage?.alt || ""} fill priority sizes="100vw" />
-          </div>
-        </Parallax>
-        <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-[#0B1222] via-[#0B1222]/60 to-[#0B1222]/20" />
-        <Container className="relative grid items-end gap-10 pb-16 pt-32 md:grid-cols-[1.4fr_1fr] md:pb-24">
-          <div className="hero-stagger">
+      {/* Hero: the founder, with project photos that fly into place */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-surface via-bg to-bg">
+        <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_30%,rgb(var(--primary)/.08),transparent_45%)]" />
+        <Container className="relative grid min-h-[100svh] items-center gap-12 pb-16 pt-28 md:grid-cols-[1.05fr_1fr] md:gap-8 md:pt-24">
+          <div className="hero-stagger order-2 md:order-1">
             <div className="mb-6 flex items-center gap-4" style={s(0)}>
               <span className="rule-accent" aria-hidden />
-              <p className="text-xs font-semibold uppercase tracking-eyebrow text-white/85">Founder · {settings.brandName}</p>
+              <p className="eyebrow">Founder · {settings.brandName}</p>
             </div>
-            <h1 className="text-[3rem] font-extrabold leading-[0.98] text-white sm:text-7xl md:text-8xl" style={s(1)}>
+            <h1 className="text-[3.2rem] font-extrabold leading-[0.95] sm:text-7xl lg:text-8xl" style={s(1)}>
               {settings.ownerName.split(" ").map((w, i) => (
-                <span key={i} className="block">{w}</span>
+                <span key={i} className={i === 1 ? "block text-primary" : "block"}>{w}</span>
               ))}
             </h1>
-            <p className="mt-6 max-w-lg text-lg text-white/90 md:text-xl" style={s(2)}>{settings.tagline}</p>
+            <p className="mt-6 max-w-md text-lg text-muted md:text-xl" style={s(2)}>{settings.tagline}</p>
             <div className="mt-10 flex flex-wrap gap-3" style={s(3)}>
-              <ButtonLink href="/projects" size="lg" className="border-white bg-white !text-[#0E1B33] hover:bg-transparent hover:!text-white">
-                See projects <IconArrow />
-              </ButtonLink>
+              <ButtonLink href="/projects" variant="solid" size="lg">See projects <IconArrow /></ButtonLink>
               {wa && (
                 <ButtonLink href={wa} size="lg" className="!bg-none border-[#25D366] bg-[#25D366] !text-[#0b1b10] hover:brightness-110">
                   <IconWhatsApp /> WhatsApp
                 </ButtonLink>
               )}
             </div>
+            <dl className="mt-12 flex gap-8" style={s(4)}>
+              <div className="flex flex-col-reverse"><dt className="text-xs uppercase tracking-eyebrow text-muted">Projects</dt><dd className="font-heading text-3xl font-extrabold tabular-nums">{projects.length}</dd></div>
+              <div className="flex flex-col-reverse"><dt className="text-xs uppercase tracking-eyebrow text-muted">Building now</dt><dd className="font-heading text-3xl font-extrabold tabular-nums">{projects.filter((p) => p.status === "ongoing").length}</dd></div>
+            </dl>
           </div>
-          {settings.portrait?.url && (
-            <div className="hero-stagger hidden justify-self-end md:block">
-              <div className="relative aspect-[4/5] w-72 overflow-hidden rounded-lg ring-1 ring-white/20 lg:w-80" style={s(2)}>
-                <Photo src={settings.portrait.url} alt={settings.portrait.alt || settings.ownerName} fill sizes="320px" />
-              </div>
-            </div>
-          )}
+          <div className="order-1 md:order-2">
+            <HeroCollage portrait={settings.portrait} name={settings.ownerName} items={collage} />
+          </div>
         </Container>
-        <ScrollCue />
       </section>
 
       {/* Numbers */}
