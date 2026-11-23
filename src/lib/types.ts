@@ -86,3 +86,24 @@ export const STATUS_TENSE: Record<ProjectStatus, string> = {
   ongoing: "Present",
   upcoming: "Future",
 };
+
+export const REVIEWER_ROLES = ["Home buyer", "Shop / office owner", "Investor", "Architect / consultant", "Partner", "Other"] as const;
+
+export interface Testimonial {
+  id: string;
+  name: string;
+  /** e.g. "Home buyer" */
+  role: string;
+  /** e.g. "4 BHK owner" — shown after the role */
+  detail: string;
+  /** Project title, optional */
+  project: string;
+  quote: string;
+  rating: number;
+  photo: string;
+  /** Only approved reviews appear on the website */
+  approved: boolean;
+  /** "website" = sent through the review form, "admin" = added by you */
+  source: "website" | "admin";
+  createdAt: string;
+}

@@ -23,6 +23,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
             <li><Link className={linkCls} href="/projects?status=completed">Completed work</Link></li>
             <li><Link className={linkCls} href="/projects?status=ongoing">Under construction</Link></li>
             <li><Link className={linkCls} href="/projects?status=upcoming">Upcoming</Link></li>
+            <li><Link className={linkCls} href="/review">Write a review</Link></li>
           </ul>
         </div>
         <div>

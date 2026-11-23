@@ -5,11 +5,11 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth";
 import {
-  getAllProjects, getEnquiries, getSettings, saveAllProjects, saveEnquiries, saveSettings,
+  getAllProjects, getEnquiries, getSettings, getTestimonials, saveAllProjects, saveEnquiries, saveSettings, saveTestimonials,
 } from "@/lib/data";
 import { deleteImage } from "@/lib/storage";
 import { SESSION_COOKIE, SESSION_TTL_SECONDS, checkPassword, createSessionToken } from "@/lib/session";
-import type { Project, ProjectImage, ProjectSpec, ProjectStatus, SiteSettings, Visibility } from "@/lib/types";
+import type { Project, ProjectImage, ProjectSpec, ProjectStatus, SiteSettings, Testimonial, Visibility } from "@/lib/types";
 import { slugify } from "@/lib/utils";
 
 /* ───────── Auth ───────── */
@@ -186,4 +186,49 @@ export async function saveSiteSettings(payload: string): Promise<SaveResult> {
   await saveSettings(next);
   refresh();
   return { ok: true };
+}
+
+/* ───────── Testimonials ───────── */
+export async function saveTestimonial(payload: string): Promise<SaveResult> {
+  await requireAdmin();
+  let raw: Partial<Testimonial>;
+  try { raw = JSON.parse(payload); } catch { return { ok: false, error: "Invalid data" }; }
+  const name = str(raw.name, 80);
+  const quote = str(raw.quote, 600);
+  if (!name || !quote) return { ok: false, error: "Name and review text are required." };
+  const list = await getTestimonials();
+  const existing = raw.id ? list.find((t) => t.id === raw.id) : undefined;
+  const t: Testimonial = {
+    id: existing?.id ?? randomUUID(),
+    name,
+    role: str(raw.role, 40),
+    detail: str(raw.detail, 60),
+    project: str(raw.project, 120),
+    quote,
+    rating: Math.min(5, Math.max(1, Math.round(Number(raw.rating) || 5))),
+    photo: str(raw.photo, 1000),
+    approved: raw.approved ?? true,
+    source: existing?.source ?? "admin",
+    createdAt: existing?.createdAt ?? new Date().toISOString(),
+  };
+  if (existing?.photo && existing.photo !== t.photo) await deleteImage(existing.photo);
+  await saveTestimonials(existing ? list.map((x) => (x.id === t.id ? t : x)) : [t, ...list]);
+  refresh();
+  return { ok: true, id: t.id };
+}
+
+export async function setTestimonialApproved(id: string, approved: boolean) {
+  await requireAdmin();
+  const list = await getTestimonials();
+  await saveTestimonials(list.map((t) => (t.id === id ? { ...t, approved } : t)));
+  refresh();
+}
+
+export async function deleteTestimonial(id: string) {
+  await requireAdmin();
+  const list = await getTestimonials();
+  const t = list.find((x) => x.id === id);
+  if (t?.photo) await deleteImage(t.photo);
+  await saveTestimonials(list.filter((x) => x.id !== id));
+  refresh();
 }

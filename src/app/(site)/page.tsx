@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
-import { getPublishedProjects, getSettings } from "@/lib/data";
+import { getApprovedTestimonials, getPublishedProjects, getSettings } from "@/lib/data";
 import { STATUS_LABEL, type ProjectStatus } from "@/lib/types";
 import { telLink, whatsappLink } from "@/lib/utils";
 import { ButtonLink } from "@/components/ui/Button";
@@ -10,8 +10,9 @@ import { Parallax } from "@/components/ui/Parallax";
 import { CountUp } from "@/components/ui/CountUp";
 import { Container, Section } from "@/components/ui/Section";
 import { ScrollCue } from "@/components/site/ScrollCue";
-import { PartnerMarquee } from "@/components/site/PartnerMarquee";
 import { ProjectCard } from "@/components/site/ProjectCard";
+import { TestimonialMarquee } from "@/components/site/TestimonialMarquee";
+import { Stars } from "@/components/site/Stars";
 import { IconArrow, IconPhone, IconWhatsApp } from "@/components/site/Icons";
 
 const I = { width: 28, height: 28, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true } as const;
@@ -31,7 +32,8 @@ const STAGES: { status: ProjectStatus; icon: ReactNode; label: string }[] = [
 ];
 
 export default async function HomePage() {
-  const [settings, projects] = await Promise.all([getSettings(), getPublishedProjects()]);
+  const [settings, projects, reviews] = await Promise.all([getSettings(), getPublishedProjects(), getApprovedTestimonials()]);
+  const avg = reviews.length ? reviews.reduce((a, r) => a + r.rating, 0) / reviews.length : 0;
   const featured = (projects.filter((p) => p.featured).length ? projects.filter((p) => p.featured) : projects).slice(0, 3);
   const [lead, ...rest] = featured;
   const wa = whatsappLink(settings.whatsapp, `Hello ${settings.ownerName.split(" ")[0]}, I'd like to talk about a project with ${settings.brandName}.`);
@@ -97,22 +99,29 @@ export default async function HomePage() {
         </div>
       )}
 
-      {/* Partners */}
-      {settings.partners.length > 0 && (
-        <section className="py-section">
+      {/* Reviews */}
+      {reviews.length > 0 && (
+        <section className="overflow-hidden py-section">
           <Container>
-            <Reveal className="mb-12 text-center">
-              <div className="mb-5 flex items-center justify-center gap-4">
+            <Reveal className="mb-12 flex flex-col items-center gap-4 text-center">
+              <div className="flex items-center gap-4">
                 <span className="rule-accent" aria-hidden />
-                <p className="eyebrow">Worked with</p>
+                <p className="eyebrow">What people say</p>
                 <span className="rule-accent" aria-hidden />
               </div>
-              <h2 className="text-3xl font-extrabold sm:text-5xl">Partners &amp; collaborators</h2>
+              <h2 className="text-3xl font-extrabold sm:text-5xl">Trusted by owners</h2>
+              <p className="flex items-center gap-2 text-muted">
+                <Stars value={Math.round(avg)} size={20} />
+                <span className="font-semibold text-fg">{avg.toFixed(1)}</span> · {reviews.length} review{reviews.length > 1 ? "s" : ""}
+              </p>
             </Reveal>
           </Container>
           <Reveal variant="fade">
-            <PartnerMarquee partners={settings.partners} />
+            <TestimonialMarquee items={reviews} />
           </Reveal>
+          <div className="mt-10 text-center">
+            <ButtonLink href="/review">Write a review</ButtonLink>
+          </div>
         </section>
       )}
 

@@ -3,7 +3,7 @@ import { cache } from "react";
 import { randomUUID } from "node:crypto";
 import { readJSON, writeJSON } from "./storage";
 import { DEFAULT_SETTINGS, SAMPLE_PROJECTS } from "./seed";
-import type { Enquiry, Project, ProjectStatus, SiteSettings } from "./types";
+import type { Enquiry, Project, ProjectStatus, SiteSettings, Testimonial } from "./types";
 
 /* ───────── Projects ───────── */
 export const getAllProjects = cache(async (): Promise<Project[]> => {
@@ -55,4 +55,18 @@ export async function addEnquiry(e: Omit<Enquiry, "id" | "createdAt" | "read" | 
   const entry: Enquiry = { ...e, id: randomUUID(), createdAt: new Date().toISOString(), read: false, archived: false };
   await saveEnquiries([entry, ...list].slice(0, 2000));
   return entry;
+}
+
+/* ───────── Testimonials ───────── */
+export async function getTestimonials() {
+  const list = await readJSON<Testimonial[]>("testimonials", []);
+  return list.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+}
+
+export async function getApprovedTestimonials() {
+  return (await getTestimonials()).filter((t) => t.approved);
+}
+
+export async function saveTestimonials(list: Testimonial[]) {
+  await writeJSON("testimonials", list);
 }

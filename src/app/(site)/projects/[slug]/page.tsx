@@ -145,6 +145,12 @@ export default async function ProjectPage({ params }: Props) {
             >
               Send an enquiry <IconArrow />
             </Link>
+            <Link
+              href={`/review?project=${encodeURIComponent(project.title)}`}
+              className="mt-1 flex min-h-tap items-center gap-2 text-sm text-muted hover:text-primary"
+            >
+              ★ Own here? Write a review
+            </Link>
           </Reveal>
         </aside>
       </Container>

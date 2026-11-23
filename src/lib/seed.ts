@@ -17,14 +17,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   linkedin: "",
   heroImage: { url: "/projects/sky-revanta/aerial-view.jpg", alt: "Aerial view of Sky Revanta on its corner plot" },
   portrait: null,
-  partners: [
-    { name: "Saundarya Group", role: "Joint developer", logo: "/partners/saundarya-group.png" },
-    { name: "ADI Infrastructure", role: "Joint developer", logo: "/partners/adi-infrastructure.png" },
-    { name: "ADS Architect Pvt. Ltd.", role: "Architect", logo: "/partners/ads-architect.png" },
-    { name: "Amee Associates", role: "Structural consultant", logo: "/partners/amee-associates.png" },
-    { name: "Studio 2+2", role: "Landscape design", logo: "/partners/studio-2-2.png" },
-    { name: "Artech Engineering Solutions", role: "MEP consultant", logo: "/partners/artech-engineering.png" },
-  ],
+  partners: [],
   // Add real figures from Admin → Site settings (e.g. years building, projects delivered); the strip is hidden while empty.
   stats: [],
 };

@@ -5,11 +5,12 @@ import { logout } from "@/app/admin/actions";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
-export function AdminNav({ unread }: { unread: number }) {
+export function AdminNav({ unread, pendingReviews = 0 }: { unread: number; pendingReviews?: number }) {
   const path = usePathname();
   const items = [
     { href: "/admin", label: "Projects", active: path === "/admin" || path.startsWith("/admin/projects") },
     { href: "/admin/enquiries", label: "Enquiries", active: path.startsWith("/admin/enquiries"), badge: unread },
+    { href: "/admin/reviews", label: "Reviews", active: path.startsWith("/admin/reviews"), badge: pendingReviews },
     { href: "/admin/settings", label: "Site settings", active: path.startsWith("/admin/settings") },
   ];
   return (
