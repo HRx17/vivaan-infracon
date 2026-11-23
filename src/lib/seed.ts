@@ -12,12 +12,12 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   about:
     "Vivaan Infracon designs and builds residential and commercial projects with an obsession for honest materials, careful detailing and on-time handover. We work with landowners, investors and families who want a builder who answers the phone.",
   email: "vivaaninfracon111@gmail.com",
-  phone: "",
-  whatsapp: "",
+  phone: "+91 97125 12531",
+  whatsapp: "919712512531",
   address: "",
   instagram: "",
   linkedin: "",
-  heroImage: { url: u("1600585154340-be6161a56a0c"), alt: "Contemporary residence at dusk with warm interior lighting" },
+  heroImage: { url: "/projects/sky-revanta/night-render.jpg", alt: "Sky Revanta at dusk: lit balconies above double-height shops on Canal Road" },
   portrait: null,
   stats: [
     { label: "Years building", value: "10+" },
@@ -32,6 +32,36 @@ function p(i: number, data: Omit<Project, "id" | "order" | "createdAt" | "update
 }
 
 export const SAMPLE_PROJECTS: Project[] = [
+  // REAL PROJECT — from the Sky Revanta Instagram posts (renders, floor plan, captions).
+  p(0, {
+    slug: "sky-revanta",
+    title: "Sky Revanta",
+    status: "ongoing",
+    category: "4 BHK residences + Commercial",
+    location: "Science City, Ahmedabad",
+    year: "",
+    summary:
+      "Premium 4 BHK residences of 4,032 sq. ft. above street-front shops and showrooms, on 30 m and 18 m wide roads off Canal Road, Science City.",
+    description:
+      "Sky Revanta brings 4 BHK opulence living and commercial space together at one address. The homes rise above two levels of shops and showrooms, with frontage on both a 30-metre and an 18-metre road.\n\n" +
+      "Every residence is a 4,032 sq. ft. 4 BHK, planned around a separate formal living room (13' × 20') and a family living and dining space (12' × 24'6\"), with a 19'7\" balcony, four bedrooms (the two largest with their own dressing areas), a puja room, store and wash area. A private foyer at the lift lobby leads into each home.\n\n" +
+      "For businesses, the commercial floors offer a well-positioned space, surrounded by growing development and strong road connectivity: a space with the potential to grow with the city.",
+    cover: { url: "/projects/sky-revanta/night-render.jpg", alt: "Sky Revanta at dusk, artist's impression" },
+    gallery: [
+      { url: "/projects/sky-revanta/elevation.jpg", alt: "Front elevation on the 30 m road, artist's impression" },
+      { url: "/projects/sky-revanta/floor-plan-4bhk.jpg", alt: "4 BHK floor plan, 4,032 sq. ft." },
+    ],
+    specs: [
+      { label: "Residences", value: "4 BHK" },
+      { label: "Home size", value: "4,032 sq. ft." },
+      { label: "Commercial", value: "Shops & showrooms on two levels" },
+      { label: "Road frontage", value: "30 m & 18 m roads" },
+      { label: "Address", value: "B/h Serenity Lavish, Opp. Avadh 28, Nr. Saumya Residency, Canal Road, Science City" },
+      { label: "Gujarat RERA", value: "MAA10131/300422" },
+      { label: "Sales & site visits", value: "+91 97125 12531 / 12532" },
+    ],
+    featured: true,
+  }),
   p(1, {
     slug: "the-aranya-villas",
     title: "The Aranya Villas",

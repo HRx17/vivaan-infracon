@@ -97,7 +97,7 @@ export function ProjectForm({ initial, justCreated }: { initial?: Project; justC
           <Panel className="grid gap-5">
             <div>
               <h2 className="text-lg font-extrabold">Gallery</h2>
-              <p className="text-sm text-muted">Every 3rd photo is shown full-width. Use the arrows to reorder.</p>
+              <p className="text-sm text-muted">The first photo is shown full-width, the rest two per row, never cropped. Floor plans work well here. Use the arrows to reorder.</p>
             </div>
             <Gallery value={d.gallery} onChange={(v) => set("gallery", v)}
               onMakeCover={(img) => {

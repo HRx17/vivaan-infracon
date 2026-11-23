@@ -92,19 +92,30 @@ export default async function ProjectPage({ params }: Props) {
 
       {project.gallery.length > 0 && (
         <Container className="pb-section">
-          <ul className="grid gap-gap sm:grid-cols-2">
-            {project.gallery.map((img, i) => (
-              <li key={img.url + i} className={i % 3 === 0 ? "sm:col-span-2" : undefined}>
-                <Reveal>
-                  <figure>
-                    <div className={`relative overflow-hidden rounded-md bg-surface ${i % 3 === 0 ? "aspect-[16/9]" : "aspect-[4/3]"}`}>
-                      <Photo src={img.url} alt={img.alt || `${project.title} — photo ${i + 1}`} fill sizes={i % 3 === 0 ? "100vw" : "(min-width: 640px) 50vw, 100vw"} />
-                    </div>
-                    {img.alt && <figcaption className="mt-3 text-sm text-muted">{img.alt}</figcaption>}
-                  </figure>
-                </Reveal>
-              </li>
-            ))}
+          <ul className="grid items-start gap-gap sm:grid-cols-2">
+            {project.gallery.map((img, i) => {
+              const wide = i === 0 || project.gallery.length === 2;
+              return (
+                <li key={img.url + i} className={wide ? "sm:col-span-2" : undefined}>
+                  <Reveal>
+                    <figure>
+                      <div className="overflow-hidden rounded-md bg-surface">
+                        {/* natural aspect ratio — floor plans and elevations are never cropped */}
+                        <Photo
+                          src={img.url}
+                          alt={img.alt || `${project.title} — image ${i + 1}`}
+                          width={0}
+                          height={0}
+                          sizes={wide ? "(min-width: 1200px) 1200px, 100vw" : "(min-width: 640px) 50vw, 100vw"}
+                          style={{ width: "100%", height: "auto" }}
+                        />
+                      </div>
+                      {img.alt && <figcaption className="mt-3 text-sm text-muted">{img.alt}</figcaption>}
+                    </figure>
+                  </Reveal>
+                </li>
+              );
+            })}
           </ul>
         </Container>
       )}

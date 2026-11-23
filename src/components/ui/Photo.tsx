@@ -7,6 +7,13 @@ import { cn } from "@/lib/utils";
 export function Photo({ className, alt, src, ...rest }: Omit<ImageProps, "src"> & { src?: string | null }) {
   const [failed, setFailed] = useState(false);
   if (!src || failed) {
+    if (!rest.fill) {
+      return (
+        <div role="img" aria-label={alt} className="relative aspect-[4/3] w-full bg-gradient-to-br from-surface to-line">
+          <span aria-hidden className="absolute bottom-4 left-4 h-px w-12 bg-accent" />
+        </div>
+      );
+    }
     return (
       <div
         role="img"
