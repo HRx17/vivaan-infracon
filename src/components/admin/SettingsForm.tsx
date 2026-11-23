@@ -72,6 +72,30 @@ export function SettingsForm({ initial }: { initial: SiteSettings }) {
         </div>
       </Panel>
 
+      <Panel className="grid gap-4">
+        <div>
+          <h2 className="text-lg font-extrabold">Partners &amp; collaborators</h2>
+          <p className="text-sm text-muted">Shown as a moving logo strip on the home page. Add a logo for each (PNG with a transparent or white background works best).</p>
+        </div>
+        <ul className="grid gap-4 sm:grid-cols-2">
+          {s.partners.map((pt, i) => (
+            <li key={i} className="grid gap-3 rounded-md border border-line p-3">
+              <SingleImage value={pt.logo ? { url: pt.logo, alt: pt.name } : null} aspect="aspect-[3/1]" label="Upload logo"
+                onChange={(v) => set("partners", s.partners.map((x, k) => k === i ? { ...x, logo: v?.url ?? "" } : x))} />
+              <Input aria-label={`Partner ${i + 1} name`} placeholder="Company name" value={pt.name}
+                onChange={(e) => set("partners", s.partners.map((x, k) => k === i ? { ...x, name: e.target.value } : x))} />
+              <div className="flex gap-2">
+                <Input aria-label={`Partner ${i + 1} role`} placeholder="Role, e.g. Architect" value={pt.role}
+                  onChange={(e) => set("partners", s.partners.map((x, k) => k === i ? { ...x, role: e.target.value } : x))} />
+                <button type="button" aria-label={`Remove ${pt.name || "partner"}`} className="h-tap w-tap shrink-0 rounded-sm border border-line text-muted hover:text-danger"
+                  onClick={() => set("partners", s.partners.filter((_, k) => k !== i))}>×</button>
+              </div>
+            </li>
+          ))}
+        </ul>
+        <Button type="button" size="sm" variant="ghost" className="justify-self-start" onClick={() => set("partners", [...s.partners, { name: "", role: "", logo: "" }])}>+ Add partner</Button>
+      </Panel>
+
       <div className="grid gap-6 md:grid-cols-2">
         <Panel className="grid gap-3">
           <h2 className="text-lg font-extrabold">Home page photo</h2>
@@ -79,8 +103,8 @@ export function SettingsForm({ initial }: { initial: SiteSettings }) {
           <SingleImage value={s.heroImage} onChange={(v) => set("heroImage", v)} />
         </Panel>
         <Panel className="grid gap-3">
-          <h2 className="text-lg font-extrabold">Your portrait (optional)</h2>
-          <p className="text-sm text-muted">Shown in the About section. A photo of you on site works well.</p>
+          <h2 className="text-lg font-extrabold">Your portrait</h2>
+          <p className="text-sm text-muted">Shown large on the home page next to your name. A confident photo, ideally on site.</p>
           <SingleImage value={s.portrait} onChange={(v) => set("portrait", v)} aspect="aspect-[4/5]" />
         </Panel>
       </div>

@@ -175,6 +175,10 @@ export async function saveSiteSettings(payload: string): Promise<SaveResult> {
       .map((s) => ({ label: str(s?.label, 40), value: str(s?.value, 20) }))
       .filter((s) => s.label && s.value)
       .slice(0, 4),
+    partners: (Array.isArray(raw.partners) ? raw.partners : [])
+      .map((x) => ({ name: str(x?.name, 80), role: str(x?.role, 60), logo: str(x?.logo, 1000) }))
+      .filter((x) => x.name)
+      .slice(0, 40),
   };
   for (const k of ["heroImage", "portrait"] as const) {
     if (cur[k]?.url && cur[k]?.url !== next[k]?.url) await deleteImage(cur[k]!.url);

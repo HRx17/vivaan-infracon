@@ -166,6 +166,22 @@
   background-size: 200% 100%; animation: shimmer 1.6s ease-in-out infinite; border-radius: var(--radius-sm);
 }
 
+/* Coloured logo on light backgrounds; switch to the white version in dark mode */
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .logo-themed { content: url("/brand/vivaan-logo-white.png"); } }
+:root[data-theme="dark"] .logo-themed { content: url("/brand/vivaan-logo-white.png"); }
+
+/* Lenis smooth scrolling */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+/* Partner marquee */
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(calc(-50% - 0.75rem)); } }
+.marquee-track { animation: marquee 38s linear infinite; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+@media (min-width: 640px) { @keyframes marquee { to { transform: translateX(calc(-50% - 1.25rem)); } } }
+
 /* Lightbox */
 @keyframes lb-in { from { opacity: 0; transform: scale(.97); } to { opacity: 1; transform: none; } }
 .lb-in { animation: lb-in 450ms var(--ease-out) both; }
@@ -178,5 +194,8 @@
   .js [data-reveal] .rule-accent { width: 3rem; }
   .scroll-dot { animation: none; }
   .skeleton, .skeleton-dark { animation: none; }
+  .marquee-track { animation: none; flex-wrap: wrap; width: 100%; justify-content: center; }
+  .marquee-track > ul[aria-hidden] { display: none; }
+  .marquee-track > ul { flex-wrap: wrap; justify-content: center; }
   .lift:hover { transform: none; }
 }

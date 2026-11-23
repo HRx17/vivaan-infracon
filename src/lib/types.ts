@@ -49,6 +49,12 @@ export interface Enquiry {
   archived: boolean;
 }
 
+export interface Partner {
+  name: string;
+  role: string;
+  logo: string;
+}
+
 export interface SiteSettings {
   ownerName: string;
   brandName: string;
@@ -65,6 +71,8 @@ export interface SiteSettings {
   heroImage: ProjectImage | null;
   portrait: ProjectImage | null;
   stats: ProjectSpec[];
+  /** Companies, builders and consultants shown in the home-page marquee */
+  partners: Partner[];
 }
 
 export const STATUS_LABEL: Record<ProjectStatus, string> = {

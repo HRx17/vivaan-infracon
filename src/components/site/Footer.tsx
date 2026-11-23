@@ -11,7 +11,9 @@ export function Footer({ settings }: { settings: SiteSettings }) {
     <footer className="border-t border-line">
       <Container className="grid gap-10 py-16 md:grid-cols-[1.4fr_1fr_1fr]">
         <div>
-          <p className="font-heading text-2xl font-extrabold">{settings.brandName}</p>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/brand/vivaan-logo.png" alt={settings.brandName} width={430} height={136} className="logo-themed h-10 w-auto" />
+          <p className="mt-3 text-sm font-semibold">Founded by {settings.ownerName}</p>
           <p className="mt-3 max-w-sm text-muted">{settings.tagline}</p>
           <span className="rule-accent mt-6" aria-hidden />
         </div>

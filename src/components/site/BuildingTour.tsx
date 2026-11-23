@@ -48,15 +48,23 @@ export function BuildingTour({
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return setReduced(true);
     const sec = section.current!;
     let raf = 0;
+    let shown = -1; // eased progress actually drawn
 
-    const render = () => {
+    const tick = () => {
       raf = 0;
+      const H = window.innerHeight;
+      const target = clamp(-sec.getBoundingClientRect().top / (sec.offsetHeight - H)) * (N - 1);
+      shown = shown < 0 ? target : shown + (target - shown) * 0.16;
+      if (Math.abs(target - shown) < 0.0008) shown = target;
+      render(shown);
+      if (shown !== target) raf = requestAnimationFrame(tick);
+    };
+
+    const render = (p: number) => {
       const W = window.innerWidth;
       const H = window.innerHeight;
       const mobile = W < 768;
       const rect = sec.getBoundingClientRect();
-      const total = sec.offsetHeight - H;
-      const p = clamp(-rect.top / total) * (N - 1);
 
       // framed → full screen as the section arrives
       const f = clamp(rect.top / H);
@@ -150,8 +158,8 @@ export function BuildingTour({
       dots.current.forEach((d, k) => d?.setAttribute("aria-current", k === cur ? "step" : "false"));
     };
 
-    const onScroll = () => { if (!raf) raf = requestAnimationFrame(render); };
-    render();
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(tick); };
+    tick();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
     return () => {
@@ -165,11 +173,16 @@ export function BuildingTour({
     const sec = section.current;
     if (!sec) return;
     const total = sec.offsetHeight - window.innerHeight;
-    window.scrollTo({ top: sec.offsetTop + (k / (N - 1)) * total, behavior: "smooth" });
+    const top = sec.offsetTop + (k / (N - 1)) * total;
+    if (window.__lenis) window.__lenis.scrollTo(top, { duration: 1.6 });
+    else window.scrollTo({ top, behavior: "smooth" });
   };
   const skip = () => {
     const sec = section.current;
-    if (sec) window.scrollTo({ top: sec.offsetTop + sec.offsetHeight - 40, behavior: "smooth" });
+    if (!sec) return;
+    const top = sec.offsetTop + sec.offsetHeight - 40;
+    if (window.__lenis) window.__lenis.scrollTo(top, { duration: 2 });
+    else window.scrollTo({ top, behavior: "smooth" });
   };
 
   const ctas = (

@@ -1,7 +1,5 @@
 import type { Project, SiteSettings } from "./types";
 
-// SAMPLE CONTENT — replace from /admin. Photos are Unsplash placeholders.
-const u = (id: string) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=2400&q=80`;
 
 export const DEFAULT_SETTINGS: SiteSettings = {
   ownerName: "Nileesh Baldha",
@@ -19,11 +17,16 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   linkedin: "",
   heroImage: { url: "/projects/sky-revanta/aerial-view.jpg", alt: "Aerial view of Sky Revanta on its corner plot" },
   portrait: null,
-  stats: [
-    { label: "Years building", value: "10+" },
-    { label: "Projects delivered", value: "25+" },
-    { label: "Sq. ft. constructed", value: "1M+" },
+  partners: [
+    { name: "Saundarya Group", role: "Joint developer", logo: "/partners/saundarya-group.png" },
+    { name: "ADI Infrastructure", role: "Joint developer", logo: "/partners/adi-infrastructure.png" },
+    { name: "ADS Architect Pvt. Ltd.", role: "Architect", logo: "/partners/ads-architect.png" },
+    { name: "Amee Associates", role: "Structural consultant", logo: "/partners/amee-associates.png" },
+    { name: "Studio 2+2", role: "Landscape design", logo: "/partners/studio-2-2.png" },
+    { name: "Artech Engineering Solutions", role: "MEP consultant", logo: "/partners/artech-engineering.png" },
   ],
+  // Add real figures from Admin → Site settings (e.g. years building, projects delivered); the strip is hidden while empty.
+  stats: [],
 };
 
 const now = new Date().toISOString();
@@ -87,116 +90,5 @@ export const SAMPLE_PROJECTS: Project[] = [
       { label: "Sales & site visits", value: "+91 97125 12531 / 12532 · skyrevanta111@gmail.com" },
     ],
     featured: true,
-  }),
-  p(1, {
-    slug: "the-aranya-villas",
-    title: "The Aranya Villas",
-    status: "completed",
-    category: "Villas",
-    location: "Surat, Gujarat",
-    year: "2023",
-    summary: "Fourteen courtyard villas arranged around a shared garden, finished in lime plaster and teak.",
-    description:
-      "Aranya began with a simple brief: build homes that stay cool without leaning on air conditioning. Each villa turns inward to a private courtyard, with deep overhangs and cross-ventilated rooms.\n\nWe sourced local stone for the boundary walls and kept the original neem trees on site, routing the internal road around them.",
-    cover: { url: u("1613490493576-7fde63acd811"), alt: "Villa with pool and timber deck" },
-    gallery: [
-      { url: u("1600596542815-ffad4c1539a9"), alt: "Villa facade at evening" },
-      { url: u("1600607687939-ce8a6c25118c"), alt: "Double-height living room" },
-      { url: u("1600566753190-17f0baa2a6c3"), alt: "Kitchen with stone island" },
-    ],
-    specs: [
-      { label: "Homes", value: "14 villas" },
-      { label: "Built-up area", value: "62,000 sq. ft." },
-      { label: "Plot", value: "3.2 acres" },
-      { label: "Handover", value: "On schedule" },
-    ],
-    featured: true,
-  }),
-  p(2, {
-    slug: "vivaan-business-centre",
-    title: "Vivaan Business Centre",
-    status: "completed",
-    category: "Commercial",
-    location: "Surat, Gujarat",
-    year: "2021",
-    summary: "A seven-storey office building with column-free floor plates and a shaded public forecourt.",
-    description:
-      "Built for owner-occupiers, the Business Centre offers flexible floors that can be split into suites as small as 600 sq. ft. A ventilated façade cuts afternoon heat gain on the west side.",
-    cover: { url: u("1486406146926-c627a92ad1ab"), alt: "Glass office tower against the sky" },
-    gallery: [{ url: u("1487958449943-2429e8be8625"), alt: "White architectural facade" }],
-    specs: [
-      { label: "Floors", value: "G + 7" },
-      { label: "Built-up area", value: "1,10,000 sq. ft." },
-      { label: "Parking", value: "2 basements" },
-    ],
-    featured: false,
-  }),
-  p(3, {
-    slug: "vivaan-residency",
-    title: "Vivaan Residency",
-    status: "ongoing",
-    category: "Residential",
-    location: "Surat, Gujarat",
-    year: "2025 – 2027",
-    summary: "Two towers of 3 and 4 BHK residences with generous balconies and a rooftop club.",
-    description:
-      "Structure is complete up to the ninth slab. Every apartment is a corner unit, with three sides of light and a 10-foot deep balcony off the living room.",
-    cover: { url: u("1545324418-cc1a3fa10c00"), alt: "Residential apartment tower" },
-    gallery: [{ url: u("1541888946425-d81bb19240f5"), alt: "Construction site with crane" }],
-    specs: [
-      { label: "Residences", value: "96" },
-      { label: "Configuration", value: "3 & 4 BHK" },
-      { label: "Progress", value: "9th slab cast" },
-    ],
-    featured: true,
-  }),
-  p(4, {
-    slug: "riverside-row-houses",
-    title: "Riverside Row Houses",
-    status: "ongoing",
-    category: "Residential",
-    location: "Surat, Gujarat",
-    year: "2025 – 2026",
-    summary: "Twenty-two row houses with private terraces, planned for families moving up from apartments.",
-    description: "Foundations and plinth are complete across all units. Sample house opening soon.",
-    cover: { url: u("1504307651254-35680f356dfd"), alt: "Builder reviewing work on site" },
-    gallery: [],
-    specs: [
-      { label: "Homes", value: "22" },
-      { label: "Configuration", value: "4 BHK row houses" },
-    ],
-    featured: false,
-  }),
-  p(5, {
-    slug: "vivaan-skyline",
-    title: "Vivaan Skyline",
-    status: "upcoming",
-    category: "Mixed use",
-    location: "Surat, Gujarat",
-    year: "Launching 2027",
-    summary: "A mixed-use landmark: retail at street level, offices above, and a sky garden on top.",
-    description:
-      "Currently in design development. Landowners and investors interested in joint development are welcome to get in touch.",
-    cover: { url: u("1582268611958-ebfd161ef9cf"), alt: "Modern high-rise rendering" },
-    gallery: [],
-    specs: [
-      { label: "Use", value: "Retail + Office" },
-      { label: "Stage", value: "Design development" },
-    ],
-    featured: true,
-  }),
-  p(6, {
-    slug: "greenfield-farm-plots",
-    title: "Greenfield Farm Plots",
-    status: "upcoming",
-    category: "Plotted development",
-    location: "Gujarat",
-    year: "2027",
-    summary: "Gated weekend-home plots with planted avenues, water harvesting and ready infrastructure.",
-    description: "Approvals in progress. Register interest for early allotment.",
-    cover: { url: u("1503387762-592deb58ef4e"), alt: "Architectural plans on a table" },
-    gallery: [],
-    specs: [{ label: "Stage", value: "Approvals" }],
-    featured: false,
   }),
 ];

@@ -1,206 +1,207 @@
 import Link from "next/link";
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { getPublishedProjects, getSettings } from "@/lib/data";
-import { STATUS_LABEL, STATUS_TENSE, type ProjectStatus } from "@/lib/types";
+import { STATUS_LABEL, type ProjectStatus } from "@/lib/types";
+import { telLink, whatsappLink } from "@/lib/utils";
 import { ButtonLink } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
 import { Photo } from "@/components/ui/Photo";
 import { Reveal } from "@/components/ui/Reveal";
 import { Parallax } from "@/components/ui/Parallax";
 import { CountUp } from "@/components/ui/CountUp";
-import { ScrollCue } from "@/components/site/ScrollCue";
-import { BuildingTour } from "@/components/site/BuildingTour";
-import { TOURS } from "@/lib/tours";
-import { telLink, whatsappLink } from "@/lib/utils";
 import { Container, Section } from "@/components/ui/Section";
-import { ContactButtons } from "@/components/site/ContactLinks";
-import { IconArrow } from "@/components/site/Icons";
+import { ScrollCue } from "@/components/site/ScrollCue";
+import { PartnerMarquee } from "@/components/site/PartnerMarquee";
 import { ProjectCard } from "@/components/site/ProjectCard";
+import { IconArrow, IconPhone, IconWhatsApp } from "@/components/site/Icons";
 
-const TIMELINE: { status: ProjectStatus; blurb: string }[] = [
-  { status: "completed", blurb: "Handed over, lived in, and still standing up to inspection." },
-  { status: "ongoing", blurb: "On site right now. Visits can be arranged for serious buyers." },
-  { status: "upcoming", blurb: "In design and approvals. Open to land partners and early buyers." },
+const I = { width: 28, height: 28, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true } as const;
+
+/* Four-step approach: an icon and a few words each, easy to read at a glance */
+const APPROACH: { icon: ReactNode; title: string; line: string }[] = [
+  { icon: <svg {...I}><path d="M3 20h18M5 20V9l7-5 7 5v11" /><path d="M9 20v-6h6v6" /></svg>, title: "Right land", line: "Clear titles, checked soil" },
+  { icon: <svg {...I}><path d="M4 4h16v16H4z" /><path d="M4 10h16M10 10v10" /></svg>, title: "Smart design", line: "Light, air, real family life" },
+  { icon: <svg {...I}><circle cx="12" cy="12" r="3" /><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z" /></svg>, title: "Open site", line: "Visit any time, see progress" },
+  { icon: <svg {...I}><path d="M7 11V7a5 5 0 0 1 10 0v4" /><rect x="4" y="11" width="16" height="10" rx="2" /><path d="M12 15v2" /></svg>, title: "Honest handover", line: "On time, papers in order" },
 ];
 
-const PROCESS = [
-  { n: "01", title: "Land & feasibility", body: "Title checks, soil reports and a straight answer on what the plot can carry, before anyone commits money." },
-  { n: "02", title: "Design with intent", body: "Plans drawn around light, ventilation and how a family actually uses a home, not around maximising saleable area." },
-  { n: "03", title: "Build in the open", body: "Monthly progress photos, clear payment milestones and a site you are welcome to visit." },
-  { n: "04", title: "Handover & after", body: "Documentation in order, snag lists closed, and a builder who still picks up the phone a year later." },
+const STAGES: { status: ProjectStatus; icon: ReactNode; label: string }[] = [
+  { status: "completed", label: "Completed", icon: <svg {...I}><path d="M20 6 9 17l-5-5" /></svg> },
+  { status: "ongoing", label: "Building now", icon: <svg {...I}><path d="M2 20h20M6 20V8h12v12M10 8V4h4v4" /></svg> },
+  { status: "upcoming", label: "Coming soon", icon: <svg {...I}><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 3" /></svg> },
 ];
 
 export default async function HomePage() {
   const [settings, projects] = await Promise.all([getSettings(), getPublishedProjects()]);
   const featured = (projects.filter((p) => p.featured).length ? projects.filter((p) => p.featured) : projects).slice(0, 3);
-  const counts = (s: ProjectStatus) => projects.filter((p) => p.status === s);
   const [lead, ...rest] = featured;
-  const tourProject = projects.find((p) => TOURS[p.slug]);
+  const wa = whatsappLink(settings.whatsapp, `Hello ${settings.ownerName.split(" ")[0]}, I'd like to talk about a project with ${settings.brandName}.`);
+  const s = (i: number) => ({ "--i": i }) as CSSProperties;
 
   return (
     <>
-      {/* Hero */}
+      {/* Hero: the founder */}
       <section className="relative flex min-h-[100svh] items-end overflow-hidden bg-secondary text-white">
         <Parallax className="absolute inset-0">
           <div className="hero-settle absolute inset-0">
             <Photo src={settings.heroImage?.url} alt={settings.heroImage?.alt || ""} fill priority sizes="100vw" />
           </div>
         </Parallax>
-        <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-[#0B1222]/90 via-[#0B1222]/45 to-[#0B1222]/25" />
-        <Container className="relative pb-16 pt-32 md:pb-24">
-          <div className="hero-stagger max-w-3xl">
-            <div className="mb-6 flex items-center gap-4" style={{ "--i": 0 } as CSSProperties}>
+        <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-[#0B1222] via-[#0B1222]/60 to-[#0B1222]/20" />
+        <Container className="relative grid items-end gap-10 pb-16 pt-32 md:grid-cols-[1.4fr_1fr] md:pb-24">
+          <div className="hero-stagger">
+            <div className="mb-6 flex items-center gap-4" style={s(0)}>
               <span className="rule-accent" aria-hidden />
-              <p className="text-xs font-semibold uppercase tracking-eyebrow text-white/85">
-                {settings.ownerName} · Builder &amp; Founder
-              </p>
+              <p className="text-xs font-semibold uppercase tracking-eyebrow text-white/85">Founder · {settings.brandName}</p>
             </div>
-            <h1 className="text-[2.6rem] font-extrabold leading-[1.05] text-white sm:text-6xl md:text-7xl" style={{ "--i": 1 } as CSSProperties}>
-              {settings.brandName}
+            <h1 className="text-[3rem] font-extrabold leading-[0.98] text-white sm:text-7xl md:text-8xl" style={s(1)}>
+              {settings.ownerName.split(" ").map((w, i) => (
+                <span key={i} className="block">{w}</span>
+              ))}
             </h1>
-            <p className="mt-6 max-w-xl text-lg text-white/90 md:text-xl" style={{ "--i": 2 } as CSSProperties}>{settings.tagline}</p>
-            <div className="mt-10 flex flex-wrap gap-3" style={{ "--i": 3 } as CSSProperties}>
+            <p className="mt-6 max-w-lg text-lg text-white/90 md:text-xl" style={s(2)}>{settings.tagline}</p>
+            <div className="mt-10 flex flex-wrap gap-3" style={s(3)}>
               <ButtonLink href="/projects" size="lg" className="border-white bg-white !text-[#0E1B33] hover:bg-transparent hover:!text-white">
-                View the work <IconArrow />
+                See projects <IconArrow />
               </ButtonLink>
-              <ButtonLink href="/contact" size="lg" className="border-white/80 !bg-none text-white hover:bg-white hover:!text-[#0E1B33]">
-                Collaborate
-              </ButtonLink>
+              {wa && (
+                <ButtonLink href={wa} size="lg" className="!bg-none border-[#25D366] bg-[#25D366] !text-[#0b1b10] hover:brightness-110">
+                  <IconWhatsApp /> WhatsApp
+                </ButtonLink>
+              )}
             </div>
           </div>
+          {settings.portrait?.url && (
+            <div className="hero-stagger hidden justify-self-end md:block">
+              <div className="relative aspect-[4/5] w-72 overflow-hidden rounded-lg ring-1 ring-white/20 lg:w-80" style={s(2)}>
+                <Photo src={settings.portrait.url} alt={settings.portrait.alt || settings.ownerName} fill sizes="320px" />
+              </div>
+            </div>
+          )}
         </Container>
         <ScrollCue />
       </section>
 
-      {/* Immersive building tour */}
-      {tourProject && (
-        <BuildingTour
-          tour={TOURS[tourProject.slug]}
-          whatsapp={whatsappLink(settings.whatsapp, `Hello, I'm interested in ${tourProject.title}.`)}
-          phone={settings.phone ? telLink(settings.phone) : null}
-          detailsHref={`/projects/${tourProject.slug}`}
-        />
+      {/* Numbers */}
+      {settings.stats.length > 0 && (
+        <div className="border-b border-line">
+          <Container>
+            <dl className="grid grid-cols-3">
+              {settings.stats.slice(0, 3).map((st, i) => (
+                <Reveal key={st.label} delay={i * 100} className="flex flex-col-reverse items-center gap-1 border-line py-10 text-center [&:not(:last-child)]:border-r">
+                  <dt className="text-xs font-semibold uppercase tracking-eyebrow text-muted sm:text-sm">{st.label}</dt>
+                  <dd className="font-heading text-4xl font-extrabold tabular-nums text-fg sm:text-6xl"><CountUp value={st.value} /></dd>
+                </Reveal>
+              ))}
+            </dl>
+          </Container>
+        </div>
       )}
 
-      {/* Intro + stats */}
-      <Section id="about">
-        <div className="grid gap-12 md:grid-cols-[1.2fr_1fr] md:gap-20">
-          <Reveal>
-            <div className="mb-5 flex items-center gap-4">
-              <span className="rule-accent" aria-hidden />
-              <p className="eyebrow">About</p>
-            </div>
-            <p className="font-heading text-2xl font-semibold leading-snug sm:text-3xl">{settings.intro}</p>
-            <p className="mt-6 max-w-xl text-lg text-muted">{settings.about}</p>
-            <Link href="/contact" className="mt-8 inline-flex min-h-tap items-center gap-2 font-medium text-primary hover:gap-3 transition-all duration-brand">
-              Work with me <IconArrow />
-            </Link>
+      {/* Partners */}
+      {settings.partners.length > 0 && (
+        <section className="py-section">
+          <Container>
+            <Reveal className="mb-12 text-center">
+              <div className="mb-5 flex items-center justify-center gap-4">
+                <span className="rule-accent" aria-hidden />
+                <p className="eyebrow">Worked with</p>
+                <span className="rule-accent" aria-hidden />
+              </div>
+              <h2 className="text-3xl font-extrabold sm:text-5xl">Partners &amp; collaborators</h2>
+            </Reveal>
+          </Container>
+          <Reveal variant="fade">
+            <PartnerMarquee partners={settings.partners} />
           </Reveal>
-          <div className="flex flex-col gap-8">
-            {settings.portrait?.url && (
-              <Reveal variant="image" className="relative aspect-[4/5] overflow-hidden rounded-md">
-                <div className="reveal-zoom absolute inset-0">
-                  <Photo src={settings.portrait.url} alt={settings.portrait.alt || settings.ownerName} fill sizes="(min-width: 768px) 40vw, 100vw" />
-                </div>
-              </Reveal>
-            )}
-            {settings.stats.length > 0 && (
-              <dl className="grid grid-cols-3 gap-4 md:grid-cols-1 md:gap-0">
-                {settings.stats.map((s, i) => (
-                  <Reveal key={s.label} delay={i * 80} className="flex flex-col-reverse md:border-t md:border-line md:py-6">
-                    <dt className="text-sm text-muted">{s.label}</dt>
-                    <dd className="font-heading text-3xl font-extrabold tabular-nums text-fg md:text-5xl"><CountUp value={s.value} /></dd>
-                  </Reveal>
-                ))}
-              </dl>
-            )}
-          </div>
-        </div>
-      </Section>
+        </section>
+      )}
 
-      {/* Featured */}
+      {/* Projects by Vivaan Infracon */}
       {lead && (
         <Section
           tone="surface"
-          eyebrow="Selected work"
-          title="Featured projects"
+          eyebrow={`By ${settings.brandName}`}
+          title="Projects"
           action={<ButtonLink href="/projects">All projects <IconArrow /></ButtonLink>}
         >
-          <div className="grid gap-x-gap gap-y-14 lg:grid-cols-[1.6fr_1fr]">
-            <Reveal><ProjectCard project={lead} size="lg" /></Reveal>
-            <div className="grid gap-y-14 sm:grid-cols-2 sm:gap-x-gap lg:grid-cols-1">
-              {rest.map((p, i) => (
-                <Reveal key={p.id} delay={(i + 1) * 80}><ProjectCard project={p} /></Reveal>
-              ))}
-            </div>
+          <div className={rest.length ? "grid gap-x-gap gap-y-14 lg:grid-cols-[1.6fr_1fr]" : "grid"}>
+            <Reveal><ProjectCard project={lead} size="lg" priority /></Reveal>
+            {rest.length > 0 && (
+              <div className="grid gap-y-14 sm:grid-cols-2 sm:gap-x-gap lg:grid-cols-1">
+                {rest.map((p, i) => (
+                  <Reveal key={p.id} delay={(i + 1) * 90}><ProjectCard project={p} /></Reveal>
+                ))}
+              </div>
+            )}
           </div>
+          <ul className="mt-14 grid grid-cols-3 gap-3 sm:gap-gap">
+            {STAGES.map((st, i) => {
+              const n = projects.filter((p) => p.status === st.status).length;
+              return (
+                <li key={st.status}>
+                  <Reveal delay={i * 90}>
+                    <Link href={`/projects?status=${st.status}`} className="lift group flex h-full flex-col items-center gap-2 rounded-lg border border-line bg-bg px-2 py-6 text-center hover:border-primary sm:flex-row sm:gap-4 sm:px-6 sm:text-left">
+                      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-surface text-primary transition-colors group-hover:bg-primary group-hover:text-primary-fg">{st.icon}</span>
+                      <span>
+                        <span className="block font-heading text-2xl font-extrabold tabular-nums">{n}</span>
+                        <span className="block text-xs text-muted sm:text-sm">{st.label}</span>
+                      </span>
+                    </Link>
+                  </Reveal>
+                </li>
+              );
+            })}
+          </ul>
         </Section>
       )}
 
-      {/* Past / present / future */}
-      <Section eyebrow="Past · Present · Future" title="A body of work, still growing" lead="Browse by stage. Each project page carries the full details and a direct line to me.">
-        <div className="grid gap-10 md:grid-cols-3 md:gap-gap">
-          {TIMELINE.map((t, i) => {
-            const list = counts(t.status);
-            return (
-              <Reveal key={t.status} delay={i * 80}>
-                <Card accent as="article" className="h-full">
-                  <p className="eyebrow">{STATUS_TENSE[t.status]}</p>
-                  <h3 className="mt-3 text-2xl font-extrabold">{STATUS_LABEL[t.status]}</h3>
-                  <p className="mt-3 text-muted">{t.blurb}</p>
-                  <ul className="mt-6">
-                    {list.slice(0, 3).map((p) => (
-                      <li key={p.id} className="border-t border-line">
-                        <Link href={`/projects/${p.slug}`} className="group flex min-h-[52px] items-center justify-between gap-3 py-2">
-                          <span className="font-medium group-hover:text-primary transition-colors duration-brand">{p.title}</span>
-                          <span className="shrink-0 text-sm text-muted">{p.year}</span>
-                        </Link>
-                      </li>
-                    ))}
-                    {list.length === 0 && <li className="border-t border-line py-3 text-sm text-muted">More coming soon.</li>}
-                  </ul>
-                  <Link href={`/projects?status=${t.status}`} className="mt-4 inline-flex min-h-tap items-center gap-2 text-sm font-medium text-primary">
-                    View {list.length} {list.length === 1 ? "project" : "projects"} <IconArrow />
-                  </Link>
-                </Card>
-              </Reveal>
-            );
-          })}
-        </div>
-      </Section>
-
-      {/* Process */}
-      <Section id="process" tone="surface" eyebrow="Approach" title="How I build">
-        <ol className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-gap">
-          {PROCESS.map((s, i) => (
-            <Reveal key={s.n} delay={i * 80}>
-              <Card as="li" className="h-full">
-                <p className="font-heading text-sm font-semibold text-primary">{s.n}</p>
-                <h3 className="mt-3 text-xl font-extrabold">{s.title}</h3>
-                <p className="mt-3 text-muted">{s.body}</p>
-              </Card>
+      {/* About + approach */}
+      <Section id="about" eyebrow={`About ${settings.brandName}`} title={<>Built on trust.</>} lead={settings.about}>
+        <ol className="grid grid-cols-2 gap-x-gap gap-y-10 lg:grid-cols-4">
+          {APPROACH.map((a, i) => (
+            <Reveal key={a.title} delay={i * 90}>
+              <li className="group flex flex-col items-start gap-4">
+                <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-surface text-primary transition-all duration-500 ease-brand group-hover:-translate-y-1 group-hover:bg-primary group-hover:text-primary-fg">
+                  {a.icon}
+                </span>
+                <span>
+                  <span className="block font-heading text-xl font-extrabold">{a.title}</span>
+                  <span className="mt-1 block text-muted">{a.line}</span>
+                </span>
+              </li>
             </Reveal>
           ))}
         </ol>
       </Section>
 
-      {/* CTA */}
-      <section className="py-section">
-        <Container>
-          <Reveal className="grid gap-10 border-y border-line py-14 md:grid-cols-[1.4fr_1fr] md:items-end md:py-20">
-            <div>
-              <div className="mb-5 flex items-center gap-4">
-                <span className="rule-accent" aria-hidden />
-                <p className="eyebrow">Buy · Invest · Partner</p>
-              </div>
-              <h2 className="text-3xl font-extrabold sm:text-5xl">Have land, a brief, or an eye on one of these homes?</h2>
-              <p className="mt-4 max-w-xl text-lg text-muted">Message me directly. I reply to every enquiry personally, usually the same day.</p>
+      {/* Talk */}
+      <section className="relative overflow-hidden bg-secondary py-section text-white">
+        <div aria-hidden className="absolute inset-0 opacity-25">
+          <Photo src={lead?.cover?.url} alt="" fill sizes="100vw" />
+        </div>
+        <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-[#0B1222] via-[#0B1222]/85 to-[#0B1222]/60" />
+        <Container className="relative">
+          <Reveal className="max-w-2xl">
+            <div className="mb-5 flex items-center gap-4">
+              <span className="rule-accent" aria-hidden />
+              <p className="text-xs font-semibold uppercase tracking-eyebrow text-white/80">Buy · Invest · Partner</p>
             </div>
-            <div className="flex flex-col gap-4 md:items-end">
-              <ContactButtons settings={settings} />
-              <Link href="/contact" className="inline-flex min-h-tap items-center gap-2 text-sm font-medium text-primary">
-                Or send a detailed enquiry <IconArrow />
-              </Link>
+            <h2 className="text-4xl font-extrabold text-white sm:text-6xl">Let&rsquo;s talk.</h2>
+            <p className="mt-4 text-lg text-white/85">{settings.ownerName} replies personally.</p>
+            <div className="mt-10 flex flex-wrap gap-3">
+              {wa && (
+                <ButtonLink href={wa} size="lg" className="!bg-none border-[#25D366] bg-[#25D366] !text-[#0b1b10] hover:brightness-110">
+                  <IconWhatsApp /> WhatsApp
+                </ButtonLink>
+              )}
+              {settings.phone && (
+                <ButtonLink href={telLink(settings.phone)} size="lg" className="!bg-none border-white text-white hover:bg-white hover:!text-[#0E1B33]">
+                  <IconPhone /> Call
+                </ButtonLink>
+              )}
+              <ButtonLink href="/contact" size="lg" className="!bg-none border-white/50 text-white hover:border-white">
+                Send a message <IconArrow />
+              </ButtonLink>
             </div>
           </Reveal>
         </Container>

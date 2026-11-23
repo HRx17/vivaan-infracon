@@ -10,7 +10,6 @@ import { IconClose, IconMenu } from "./Icons";
 const LINKS = [
   { href: "/projects", label: "Projects" },
   { href: "/#about", label: "About" },
-  { href: "/#process", label: "Approach" },
   { href: "/contact", label: "Contact" },
 ];
 
@@ -39,6 +38,7 @@ export function Navbar({ brand }: { brand: string }) {
   }, []);
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
+    if (open) window.__lenis?.stop(); else window.__lenis?.start();
   }, [open]);
 
   const transparent = overlay && !scrolled && !open;
@@ -58,10 +58,9 @@ export function Navbar({ brand }: { brand: string }) {
       </a>
       <nav aria-label="Main" className="mx-auto flex h-[72px] max-w-container items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex min-h-tap items-center gap-3" aria-label={`${brand} — home`}>
-          <span aria-hidden className="flex h-9 w-9 items-center justify-center border border-current font-heading text-sm font-extrabold">
-            V
-          </span>
-          <span className="font-heading text-[1.05rem] font-extrabold tracking-tight">{brand}</span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={transparent ? "/brand/vivaan-logo-white.png" : "/brand/vivaan-logo.png"} alt="" width={430} height={136} className={cn("h-9 w-auto", !transparent && "logo-themed")} />
+          <span className="sr-only">{brand}</span>
         </Link>
 
         <div className="hidden items-center gap-1 md:flex">
@@ -108,7 +107,7 @@ export function Navbar({ brand }: { brand: string }) {
       </nav>
 
       {open && (
-        <div id="mobile-menu" className="h-[calc(100dvh-72px)] overflow-y-auto border-t border-line bg-bg px-4 pb-10 pt-6 text-fg md:hidden">
+        <div id="mobile-menu" data-lenis-prevent className="h-[calc(100dvh-72px)] overflow-y-auto border-t border-line bg-bg px-4 pb-10 pt-6 text-fg md:hidden">
           <ul className="flex flex-col">
             {LINKS.map((l) => (
               <li key={l.href} className="border-b border-line">
