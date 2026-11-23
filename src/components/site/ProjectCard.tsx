@@ -3,6 +3,7 @@ import type { Project } from "@/lib/types";
 import { STATUS_LABEL } from "@/lib/types";
 import { Photo } from "@/components/ui/Photo";
 import { Reveal } from "@/components/ui/Reveal";
+import { ProjectPlaceholder } from "./ProjectPlaceholder";
 import { cn } from "@/lib/utils";
 import { IconArrow } from "./Icons";
 
@@ -12,6 +13,7 @@ export function ProjectCard({ project, size = "md", priority = false }: { projec
       <Link href={`/projects/${project.slug}`} className="block focus-visible:outline-offset-4">
         <Reveal variant="image" className={cn("relative overflow-hidden rounded-md", size === "lg" ? "aspect-[4/3] md:aspect-[16/10]" : "aspect-[4/3]")}>
           <div className="reveal-zoom absolute inset-0">
+          {project.cover?.url ? (
           <Photo
             src={project.cover?.url}
             alt={project.cover?.alt || project.title}
@@ -20,6 +22,11 @@ export function ProjectCard({ project, size = "md", priority = false }: { projec
             sizes={size === "lg" ? "(min-width: 1024px) 60vw, 100vw" : "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"}
             className="transition-transform duration-[1200ms] ease-brand group-hover:scale-[1.04]"
           />
+          ) : (
+            <div className="absolute inset-0 transition-transform duration-[1200ms] ease-brand group-hover:scale-[1.04]">
+              <ProjectPlaceholder title={project.title} />
+            </div>
+          )}
           </div>
           <span className="absolute left-4 top-4 rounded-sm bg-bg/90 px-2.5 py-1 text-xs font-medium text-fg backdrop-blur">
             {STATUS_LABEL[project.status]}

@@ -11,6 +11,7 @@ import { Parallax } from "@/components/ui/Parallax";
 import { CountUp } from "@/components/ui/CountUp";
 import { GalleryLightbox } from "@/components/site/GalleryLightbox";
 import { ScrollCue } from "@/components/site/ScrollCue";
+import { ProjectPlaceholder } from "@/components/site/ProjectPlaceholder";
 import { BuildingTour } from "@/components/site/BuildingTour";
 import { TOURS } from "@/lib/tours";
 import { telLink, whatsappLink } from "@/lib/utils";
@@ -63,7 +64,11 @@ export default async function ProjectPage({ params }: Props) {
       <header className="relative flex min-h-[88svh] items-end overflow-hidden bg-secondary text-white">
           <Parallax className="absolute inset-0">
             <div className="hero-settle absolute inset-0">
-              <Photo src={project.cover?.url} alt={project.cover?.alt || project.title} fill priority sizes="100vw" />
+              {project.cover?.url ? (
+                <Photo src={project.cover.url} alt={project.cover.alt || project.title} fill priority sizes="100vw" />
+              ) : (
+                <ProjectPlaceholder title={project.title} large />
+              )}
             </div>
           </Parallax>
           <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-[#0B1222]/90 via-[#0B1222]/35 to-[#0B1222]/30" />
@@ -106,7 +111,15 @@ export default async function ProjectPage({ params }: Props) {
 
       <Container className="grid gap-14 py-section lg:grid-cols-[1fr_360px] lg:gap-20">
         <div className="max-w-2xl space-y-5 text-lg leading-relaxed">
-          {project.description.split(/\n{2,}/).map((para, i) => (
+          {!project.description.trim() && (
+            <Reveal className="flex items-center gap-4 rounded-lg border border-line p-6">
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-surface text-primary" aria-hidden>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><rect x="3" y="5" width="18" height="14" rx="2" /><circle cx="9" cy="11" r="2" /><path d="m21 17-5-5-9 9" /></svg>
+              </span>
+              <p className="text-base text-muted">More photos and details coming soon. Ask us anything about {project.title}.</p>
+            </Reveal>
+          )}
+          {project.description.trim() && project.description.split(/\n{2,}/).map((para, i) => (
             <Reveal key={i} delay={Math.min(i, 3) * 80}>
               <p className={i === 0 ? "text-fg" : "text-muted"}>{para}</p>
             </Reveal>
